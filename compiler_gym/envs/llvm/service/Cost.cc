@@ -244,10 +244,11 @@ double getBaselineCost(const BaselineCosts& baselineCosts, LlvmBaselinePolicy po
 
 Status setBaselineCosts(llvm::Module& unoptimizedModule, BaselineCosts* baselineCosts,
                         const fs::path& workingDirectory) {
-  llvm::Module* moduleO0 = &unoptimizedModule;
-
   // Create a copy of the unoptimized module and apply the default set of LLVM
   // optimizations.
+  std::unique_ptr<llvm::Module> moduleO0 = llvm::CloneModule(unoptimizedModule);
+  applyBaselineOptimizationsToModule(moduleO0.get(), /*optLevel=*/0, /*sizeLevel=*/0);
+
   std::unique_ptr<llvm::Module> moduleOz = llvm::CloneModule(unoptimizedModule);
   applyBaselineOptimizationsToModule(moduleOz.get(), /*optLevel=*/2, /*sizeLevel=*/2);
 
@@ -259,7 +260,7 @@ Status setBaselineCosts(llvm::Module& unoptimizedModule, BaselineCosts* baseline
     llvm::Module* baselineModule{nullptr};
     switch (policy) {
       case LlvmBaselinePolicy::O0:
-        baselineModule = moduleO0;
+        baselineModule = moduleO0.get();
         break;
       case LlvmBaselinePolicy::O3:
         baselineModule = moduleO3.get();
