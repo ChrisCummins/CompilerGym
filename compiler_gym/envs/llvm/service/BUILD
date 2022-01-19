@@ -63,6 +63,7 @@ cc_binary(
     name = "compiler_gym-llvm-service-prelinked",
     srcs = ["RunService.cc"],
     deps = [
+        ":LlvmService",
         ":LlvmSession",
         "//compiler_gym/service/runtime:cc_runtime",
     ],
@@ -188,6 +189,16 @@ cc_library(
         "@glog",
         "@llvm//10.0.0",
         "@magic_enum",
+    ],
+)
+
+cc_library(
+    name = "LlvmService",
+    srcs = ["LlvmService.cc"],
+    hdrs = ["LlvmService.h"],
+    deps = [
+        ":BenchmarkFactory",
+        "//compiler_gym/service:CompilationSession",
     ],
 )
 

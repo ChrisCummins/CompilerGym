@@ -2,6 +2,7 @@
 //
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
+#include "compiler_gym/envs/llvm/service/LlvmService.h"
 #include "compiler_gym/envs/llvm/service/LlvmSession.h"
 #include "compiler_gym/service/runtime/Runtime.h"
 #include "llvm/InitializePasses.h"
@@ -59,5 +60,5 @@ void initLlvm() {
 
 int main(int argc, char** argv) {
   initLlvm();
-  createAndRunCompilerGymService<LlvmSession>(argc, argv, usage);
+  createAndRunCompilerGymService<LlvmSession, LlvmCompilationService>(argc, argv, usage);
 }

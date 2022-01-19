@@ -27,8 +27,14 @@ py_library(
 
 cc_library(
     name = "CompilationSession",
-    srcs = ["CompilationSession.cc"],
-    hdrs = ["CompilationSession.h"],
+    srcs = [
+        "CompilationService.cc",
+        "CompilationSession.cc",
+    ],
+    hdrs = [
+        "CompilationService.h",
+        "CompilationSession.h",
+    ],
     visibility = ["//visibility:public"],
     deps = [
         "//compiler_gym/service/proto:compiler_gym_service_cc",

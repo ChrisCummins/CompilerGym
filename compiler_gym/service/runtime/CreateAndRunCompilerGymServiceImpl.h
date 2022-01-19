@@ -15,10 +15,12 @@
 #include <csignal>
 #include <future>
 #include <iostream>
+#include <memory>
 #include <string>
 #include <vector>
 
 #include "boost/filesystem.hpp"
+#include "compiler_gym/service/CompilationService.h"
 #include "compiler_gym/service/proto/compiler_gym_service.pb.h"
 #include "compiler_gym/service/runtime/CompilerGymService.h"
 
@@ -28,6 +30,8 @@ DECLARE_string(working_dir);
 namespace compiler_gym::runtime {
 
 extern std::promise<void> shutdownSignal;
+
+extern std::unique_ptr<CompilationService> compilationService;
 
 // Increase maximum message size beyond the 4MB default as inbound message
 // may be larger (e.g., in the case of IR strings).
@@ -52,7 +56,7 @@ void shutdown_handler(int signum);
 //     int main(int argc, char** argv) {
 //       createAndRunCompilerGymServiceImpl(argc, argv, "usage string");
 //     }
-template <typename CompilationSessionType>
+template <typename CompilationSessionType, typename CompilationServiceType = CompilationService>
 [[noreturn]] void createAndRunCompilerGymServiceImpl(int argc, char** argv, const char* usage) {
   // Register a signal handler for SIGTERM that will set the shutdown_signal
   // future value.
@@ -119,6 +123,9 @@ template <typename CompilationSessionType>
     out.close();
     boost::filesystem::rename(pidPath.string() + ".tmp", pidPath);
   }
+
+  compilationService = std::make_unique<CompilationService>(workingDirectory);
+  CHECK(compilationService->init().ok()) << "Failed to initialize the compilation service";
 
   LOG(INFO) << "Service " << workingDirectory << " listening on " << port << ", PID = " << getpid();
 

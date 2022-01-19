@@ -4,6 +4,7 @@
 // LICENSE file in the root directory of this source tree.
 #pragma once
 
+#include "compiler_gym/service/CompilationService.h"
 #include "compiler_gym/service/runtime/CompilerGymService.h"
 #include "compiler_gym/service/runtime/CreateAndRunCompilerGymServiceImpl.h"
 
@@ -31,7 +32,7 @@ namespace compiler_gym::runtime {
  * @tparam CompilationSessionType A sublass of CompilationSession that provides
  *    implementations of the abstract methods.
  */
-template <typename CompilationSessionType>
+template <typename CompilationSessionType, typename CompilationServiceType = CompilationService>
 [[noreturn]] void createAndRunCompilerGymService(int argc, char** argv, const char* usage) {
   createAndRunCompilerGymServiceImpl<CompilationSessionType>(argc, argv, usage);
 }

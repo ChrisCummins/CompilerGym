@@ -15,9 +15,12 @@ namespace compiler_gym::runtime {
 
 std::promise<void> shutdownSignal;
 
+std::unique_ptr<CompilationService> compilationService;
+
 void shutdown_handler(int signum) {
   VLOG(1) << "Service received signal: " << signum;
   shutdownSignal.set_value();
+  CHECK(compilationService->close().ok()) << "Failed to shutdown compilation service";
 }
 
 }  // namespace compiler_gym::runtime
