@@ -326,6 +326,8 @@ message BenchmarkDynamicConfig {
   repeated Command pre_run_cmd = 3;
   // A list of commands to execute after running the benchmark.
   repeated Command post_run_cmd = 4;
+  bool run_output_is_deterministic = 5;
+  bool run_outfile_is_deterministic = 6;
 }
 
 // Representation of a command that can be executed.
