@@ -29,7 +29,10 @@ py_library(
 
 proto_library(
     name = "compiler_gym_service",
-    srcs = ["compiler_gym_service.proto"],
+    srcs = [
+        "BenchmarkBroker.proto",
+        "compiler_gym_service.proto",
+    ],
     visibility = ["//visibility:public"],
 )
 

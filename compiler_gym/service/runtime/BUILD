@@ -5,7 +5,7 @@
 #
 # This package implements the CompilerGym service runtime, which is the utility
 # code that creates RPC servers and dispatches to CompilationServices.
-load("@rules_cc//cc:defs.bzl", "cc_library")
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
 load("@rules_python//python:defs.bzl", "py_library")
 
 py_library(
@@ -32,6 +32,18 @@ py_library(
     visibility = ["//tests/service/runtime:__subpackages__"],
     deps = [
         "//compiler_gym/service/proto",
+    ],
+)
+
+cc_binary(
+    name = "BenchmarkBroker",
+    srcs = ["BenchmarkBroker.cc"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//compiler_gym/service/proto:compiler_gym_service_cc_grpc",
+        "@boost//:filesystem",
+        "@com_github_grpc_grpc//:grpc++",
+        "@glog",
     ],
 )
 

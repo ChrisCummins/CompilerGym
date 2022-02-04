@@ -1,0 +1,52 @@
+// The CompilerGym service interface description.
+//
+// Copyright (c) Facebook, Inc. and its affiliates.
+//
+// This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
+
+syntax = "proto3";
+
+package compiler_gym;
+
+option cc_enable_arenas = true;
+option go_package = "compiler_gympb";
+option java_multiple_files = true;
+option java_outer_classname = "BenchmarkBrokerProto";
+option java_package = "com.compiler_gym";
+
+import "compiler_gym/service/proto/compiler_gym_service.proto";
+
+service BenchmarkBroker {
+  rpc GetBenchmark(GetBenchmarkRequest) returns (GetBenchmarkReply);
+  rpc PutBenchmark(PutBenchmarkRequest) returns (PutBenchmarkReply);
+  rpc ClientSwapBenchmark(ClientSwapBenchmarkRequest) returns (ClientSwapBenchmarkReply);
+}
+
+// A GetBenchmark() request.
+message GetBenchmarkRequest {}
+
+// A GetBenchmark() reply.
+message GetBenchmarkReply {
+  int32 id = 1;
+  Benchmark benchmark = 2;
+}
+
+// A PutBenchmark() request.
+message PutBenchmarkRequest {
+  int32 id = 1;
+  Benchmark benchmark = 2;
+}
+
+// A PutBenchmark() reply.
+message PutBenchmarkReply {}
+
+// An ClientSwapBenchmark() request.
+message ClientSwapBenchmarkRequest {
+  Benchmark benchmark = 1;
+}
+
+// An ClientSwapBenchmark() reply.
+message ClientSwapBenchmarkReply {
+  Benchmark benchmark = 1;
+}
