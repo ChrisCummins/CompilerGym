@@ -14,7 +14,9 @@ from compiler_gym.datasets import Benchmark, BenchmarkInitError
 from compiler_gym.envs import LlvmEnv, llvm
 from compiler_gym.service.proto import Benchmark as BenchmarkProto
 from compiler_gym.service.proto import File
+from compiler_gym.third_party import llvm as llvm_paths
 from compiler_gym.util.runfiles_path import runfiles_path
+from compiler_gym.util.temporary_working_directory import temporary_working_directory
 from tests.pytest_plugins.common import bazel_only
 from tests.test_main import main
 
@@ -26,6 +28,31 @@ EXAMPLE_BITCODE_FILE = runfiles_path(
     "compiler_gym/third_party/cbench/cbench-v1/crc32.bc"
 )
 EXAMPLE_BITCODE_IR_INSTRUCTION_COUNT = 242
+
+
+def test_make_benchmark_from_clang_command_line(env: LlvmEnv):
+    with temporary_working_directory() as cwd:
+        with open("in.c", "w") as f:
+            f.write("int main() { return 0; }")
+
+        bm = llvm.make_benchmark_from_clang_command_line(
+            "gcc in.c -o foo", replace_driver=True
+        )
+
+        env.reset(benchmark=bm)
+        assert "main()" in env.ir
+
+        assert bm.proto.dynamic_config.build_cmd.argument == [
+            str(llvm_paths.clang_path()),
+            "-o",
+            f"{cwd}/foo",
+            "-xir",
+            "$IN",
+        ]
+
+        assert not (cwd / "foo").is_file()
+        bm.compile(env)
+        assert (cwd / "foo").is_file()
 
 
 def test_reset_invalid_benchmark(env: LlvmEnv):
@@ -132,7 +159,7 @@ def test_make_benchmark_single_bitcode(env: LlvmEnv):
 def test_make_benchmark_single_ll():
     """Test passing a single .ll file into make_benchmark()."""
     benchmark = llvm.make_benchmark(INVALID_IR_PATH)
-    assert benchmark.uri.startswith("benchmark://user-v0/")
+    assert str(benchmark.uri).startswith("benchmark://user-v0/")
     assert benchmark.uri.scheme == "benchmark"
     assert benchmark.uri.dataset == "user-v0"
 
