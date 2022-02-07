@@ -36,6 +36,7 @@ py_library(
     deps = [
         "//compiler_gym/datasets",
         "//compiler_gym/service/proto",
+        "//compiler_gym/third_party/gccinvocation",
         "//compiler_gym/third_party/llvm",
         "//compiler_gym/util",
     ],

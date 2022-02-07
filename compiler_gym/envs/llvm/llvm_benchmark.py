@@ -6,9 +6,11 @@
 import logging
 import os
 import random
+import shlex
 import subprocess
 import sys
 import tempfile
+import urllib.parse
 from concurrent.futures import as_completed
 from datetime import datetime
 from functools import lru_cache
@@ -16,7 +18,10 @@ from pathlib import Path
 from typing import Iterable, List, Optional, Union
 
 from compiler_gym.datasets import Benchmark, BenchmarkInitError
+from compiler_gym.service.proto import Benchmark as BenchmarkProto
+from compiler_gym.service.proto import File
 from compiler_gym.third_party import llvm
+from compiler_gym.third_party.gccinvocation.gccinvocation import GccInvocation
 from compiler_gym.util.commands import Popen, run_command
 from compiler_gym.util.runfiles_path import transient_cache_path
 from compiler_gym.util.thread_pool import get_thread_pool_executor
@@ -411,3 +416,118 @@ def make_benchmark(
     timestamp = datetime.now().strftime("%Y%m%HT%H%M%S")
     uri = f"benchmark://user-v0/{timestamp}-{random.randrange(16**4):04x}"
     return Benchmark.from_file_contents(uri, bitcode)
+
+
+class BenchmarkFromCommandLine(Benchmark):
+    def __init__(self, command_line: List[str], bitcode: bytes):
+        uri = (
+            f"benchmark://clang-v0/{urllib.parse.quote_plus(shlex.join(command_line))}"
+        )
+        super().__init__(
+            proto=BenchmarkProto(uri=str(uri), program=File(contents=bitcode))
+        )
+        self.command_line = command_line
+
+        invocation = GccInvocation(command_line)
+
+        # Modify the commandline so that it takes the bitcode file as input.
+        #
+        # Strip the original sources from the build command.
+        sources = set(invocation.sources)
+        build_command = [arg for arg in command_line if arg not in sources]
+        # Append the new source to the build command and specify the absolute path
+        # to the output.
+        for i in range(len(build_command) - 2, -1, -1):
+            if build_command[i] == "-o":
+                del build_command[i + 1]
+                del build_command[i]
+        build_command += ["-o", str(invocation.output_path), "-xir", "$IN"]
+        self.proto.dynamic_config.build_cmd.argument[:] = build_command
+
+    def compile(self, env, timeout: int = 60):
+        with tempfile.NamedTemporaryFile(
+            dir=transient_cache_path("."), prefix="benchmark-", suffix=".bc"
+        ) as f:
+            bitcode_path = f.name
+            env.write_bitcode(bitcode_path)
+
+            # Set the placeholder for input path.
+            cmd = list(self.proto.dynamic_config.build_cmd.argument).copy()
+            cmd = [bitcode_path if c == "$IN" else c for c in cmd]
+
+            print(f"$ {shlex.join(cmd)}")
+            logger.debug(f"$ {shlex.join(cmd)}")
+
+            with Popen(
+                cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+            ) as lower:
+                stdout, _ = lower.communicate(timeout=timeout)
+
+            if lower.returncode:
+                raise BenchmarkInitError(
+                    f"Failed to lower LLVM bitcode with error:\n"
+                    f"{stdout.decode('utf-8').rstrip()}\n"
+                    f"Running command: {shlex.join(cmd)}"
+                )
+
+
+def make_benchmark_from_clang_command_line(
+    cmd: Union[str, List[str]],
+    system_includes: bool = False,
+    replace_driver: bool = False,
+    timeout: int = 600,
+) -> Benchmark:
+    if not cmd:
+        raise ValueError("clang command line is empty")
+
+    # Split the command line if passed a single string.
+    if isinstance(cmd, str):
+        cmd = shlex.split(cmd)
+
+    # Append include flags for the system headers if requested.
+    if system_includes:
+        for directory in get_system_includes():
+            cmd += ["-isystem", str(directory)]
+
+    # Use the CompilerGym clang binary in place of the original driver.
+    if replace_driver:
+        cmd[0] = str(llvm.clang_path())
+
+    # Adapt and execute the command line so that it will generate an unoptimized
+    # bitecode file.
+    emit_bitcode_command = cmd.copy()
+    # Strip the -S flag, if present, as that changes the output format.
+    emit_bitcode_command = [c for c in cmd if c != "-S"]
+    # Strip the output specifier. This is not strictly required (we override it
+    # later), but makes the generated command easier to understand.
+    for i in range(len(emit_bitcode_command) - 2, -1, -1):
+        if emit_bitcode_command[i] == "-o":
+            del emit_bitcode_command[i + 1]
+            del emit_bitcode_command[i]
+    emit_bitcode_command += [
+        "-c",
+        "-emit-llvm",
+        "-o",
+        "-",
+        "-Xclang",
+        "-disable-llvm-passes",
+        "-Xclang",
+        "-disable-llvm-optzns",
+    ]
+    with Popen(
+        emit_bitcode_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    ) as llvm_link:
+        logger.debug(
+            f"Generating LLVM bitcode benchmark: {shlex.join(emit_bitcode_command)}"
+        )
+        bitcode, stderr = llvm_link.communicate(timeout=timeout)
+        if llvm_link.returncode:
+            raise BenchmarkInitError(
+                f"Failed to generate LLVM bitcode with error:\n"
+                f"{stderr.decode('utf-8').rstrip()}\n"
+                f"Running command: {shlex.join(emit_bitcode_command)}"
+            )
+
+    return BenchmarkFromCommandLine(cmd, bitcode)

@@ -11,6 +11,7 @@ from compiler_gym.envs.llvm.llvm_benchmark import (
     ClangInvocation,
     get_system_library_flags,
     make_benchmark,
+    make_benchmark_from_clang_command_line,
 )
 from compiler_gym.envs.llvm.llvm_env import LlvmEnv
 
@@ -28,6 +29,7 @@ __all__ = [
     "LLVM_SERVICE_BINARY",
     "LlvmEnv",
     "make_benchmark",
+    "make_benchmark_from_clang_command_line",
     "observation_spaces",
     "reward_spaces",
 ]
