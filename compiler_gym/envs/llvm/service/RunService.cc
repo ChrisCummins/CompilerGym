@@ -23,6 +23,7 @@ void initLlvm() {
 
   // Initialize passes.
   llvm::PassRegistry& Registry = *llvm::PassRegistry::getPassRegistry();
+#if 0  // TODO(cummins): The initialize pass routine is LLVM-version specific.
   llvm::initializeCore(Registry);
   llvm::initializeCoroutines(Registry);
   llvm::initializeScalarOpts(Registry);
@@ -54,6 +55,46 @@ void initLlvm() {
   llvm::initializeExpandReductionsPass(Registry);
   llvm::initializeWasmEHPreparePass(Registry);
   llvm::initializeWriteBitcodePassPass(Registry);
+#else
+  initializeCore(Registry);
+  initializeCoroutines(Registry);
+  initializeScalarOpts(Registry);
+  initializeObjCARCOpts(Registry);
+  initializeVectorization(Registry);
+  initializeIPO(Registry);
+  initializeAnalysis(Registry);
+  initializeTransformUtils(Registry);
+  initializeInstCombine(Registry);
+  initializeAggressiveInstCombine(Registry);
+  initializeInstrumentation(Registry);
+  initializeTarget(Registry);
+  // For codegen passes, only passes that do IR to IR transformation are
+  // supported.
+  initializeExpandMemCmpPassPass(Registry);
+  initializeScalarizeMaskedMemIntrinLegacyPassPass(Registry);
+  initializeCodeGenPreparePass(Registry);
+  initializeAtomicExpandPass(Registry);
+  initializeRewriteSymbolsLegacyPassPass(Registry);
+  initializeWinEHPreparePass(Registry);
+  initializeDwarfEHPrepareLegacyPassPass(Registry);
+  initializeSafeStackLegacyPassPass(Registry);
+  initializeSjLjEHPreparePass(Registry);
+  initializePreISelIntrinsicLoweringLegacyPassPass(Registry);
+  initializeGlobalMergePass(Registry);
+  initializeIndirectBrExpandPassPass(Registry);
+  initializeInterleavedLoadCombinePass(Registry);
+  initializeInterleavedAccessPass(Registry);
+  initializeEntryExitInstrumenterPass(Registry);
+  initializePostInlineEntryExitInstrumenterPass(Registry);
+  initializeUnreachableBlockElimLegacyPassPass(Registry);
+  initializeExpandReductionsPass(Registry);
+  initializeExpandVectorPredicationPass(Registry);
+  initializeWasmEHPreparePass(Registry);
+  initializeWriteBitcodePassPass(Registry);
+  initializeHardwareLoopsPass(Registry);
+  initializeTypePromotionPass(Registry);
+  initializeReplaceWithVeclibLegacyPass(Registry);
+#endif
 }
 
 }  // anonymous namespace
