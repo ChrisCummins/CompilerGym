@@ -39,8 +39,6 @@ cg_cc_library(
   ABS_DEPS
     fmt
     magic_enum
-  NON_LIB_DEPS
-    compiler_gym::envs::llvm::service::passes::actions_genfiles
   PUBLIC
 )
 
