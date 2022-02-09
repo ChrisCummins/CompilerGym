@@ -138,7 +138,7 @@ cmake -GNinja \
 
 cmake  --build "<path to build directory>"
 
-pip install <path to build directory>/py_pkg/dist/compiler_gym*.whl --force-reinstall
+python -m pip install <path to build directory>/py_pkg/dist/compiler_gym*.whl --force-reinstall
 ```
 Additional optional configuration arguments:
 
