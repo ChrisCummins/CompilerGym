@@ -243,6 +243,7 @@ www: www-build
 	cd www && $(PYTHON) www.py
 
 www-build:
+	$(PYTHON) -m pip install -r www/requirements.txt
 	cd www/frontends/compiler_gym && npm ci && npm run build
 
 www-image: www-build
