@@ -38,7 +38,7 @@ ExternalProject_Add(
   llvm
   PREFIX "${CMAKE_CURRENT_BINARY_DIR}/llvm"
   GIT_REPOSITORY "https://github.com/llvm/llvm-project.git"
-  GIT_TAG d32170dbd5b0d54436537b6b75beaf44324e0c28 #tag llvmorg-10.0.0
+  GIT_TAG 75e33f71c2dae584b13a7d1186ae0a038ba98838 #tag llvmorg-13.0.1
   SOURCE_SUBDIR llvm
   CMAKE_ARGS
     -G Ninja
