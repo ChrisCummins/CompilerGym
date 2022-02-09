@@ -72,31 +72,4 @@ cg_py_library(
   PUBLIC
 )
 
-string(CONCAT _CMD
-  "\"${Python3_EXECUTABLE}\" "
-    "\"$<TARGET_PROPERTY:compiler_gym__envs__llvm__make_specs,LOCATION>\" "
-    "\"$<TARGET_FILE:compiler_gym__envs__llvm__service__compiler_gym-llvm-service>\" "
-    "\"$@\"")
-set_command_pythonpath(COMMAND "${_CMD}" RESULT _CMD)
-cg_genrule(
-  NAME specs
-  OUTS "specs.py"
-  COMMAND "${_CMD}"
-  DEPENDS
-    ::make_specs
-    compiler_gym::compiler_gym_partial
-    compiler_gym::envs::llvm::service::service
-    compiler_gym::envs::llvm::service::compiler_gym-llvm-service
-)
-
-cg_py_binary(
-  NAME
-    make_specs
-  SRCS
-    "make_specs.py"
-  DATA
-    "${CMAKE_CURRENT_BINARY_DIR}/service/passes/flag_descriptions.txt"
-  DEPS
-    ::llvm_env
-    compiler_gym::util::util
-)
+configure_file(specs.py specs.py COPYONLY)

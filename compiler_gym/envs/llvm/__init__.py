@@ -3,7 +3,6 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 """Register the LLVM environments."""
-import sys
 from itertools import product
 
 # from compiler_gym.envs.llvm.compute_observation import compute_observation
@@ -14,11 +13,7 @@ from compiler_gym.envs.llvm.llvm_benchmark import (
     make_benchmark_from_clang_command_line,
 )
 from compiler_gym.envs.llvm.llvm_env import LlvmEnv
-
-# TODO(github.com/facebookresearch/CompilerGym/issues/506): Tidy up.
-if "compiler_gym.envs.llvm.is_making_specs" not in sys.modules:
-    from compiler_gym.envs.llvm.specs import observation_spaces, reward_spaces
-
+from compiler_gym.envs.llvm.specs import observation_spaces, reward_spaces
 from compiler_gym.util.registration import register
 from compiler_gym.util.runfiles_path import runfiles_path
 
