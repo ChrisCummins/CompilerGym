@@ -30,7 +30,7 @@ cg_cc_library(
     ActionSpace
   HDRS
     "ActionSpace.h"
-    "$<TARGET_PROPERTY:compiler_gym__envs__llvm__service__passes__actions_genfiles,BINARY_DIR>/ActionEnum.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/passes/13.0.1/ActionEnum.h"
   SRCS
     "ActionSpace.cc"
   DEPS
@@ -189,8 +189,8 @@ cg_cc_library(
     "-DGOOGLE_PROTOBUF_NO_RTTI"
     "-fno-rtti"
   HDRS
-    "$<TARGET_PROPERTY:compiler_gym__envs__llvm__service__passes__actions_genfiles,BINARY_DIR>/ActionHeaders.h"
-    "$<TARGET_PROPERTY:compiler_gym__envs__llvm__service__passes__actions_genfiles,BINARY_DIR>/ActionSwitch.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/passes/13.0.1/ActionHeaders.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/passes/13.0.1/ActionSwitch.h"
     "LlvmSession.h"
   SRCS
     "LlvmSession.cc"
@@ -223,7 +223,7 @@ cg_cc_library(
     Clog::libclog
   INCLUDES
     ${LLVM_INCLUDE_DIRS}
-    "$<TARGET_PROPERTY:compiler_gym__envs__llvm__service__passes__actions_genfiles,BINARY_DIR>"
+    ${CMAKE_CURRENT_SOURCE_DIR}/passes/13.0.1
   DEFINES
     ${LLVM_DEFINITIONS}
   PUBLIC
