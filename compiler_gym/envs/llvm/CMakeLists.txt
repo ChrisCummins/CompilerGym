@@ -94,7 +94,8 @@ cg_py_binary(
     make_specs
   SRCS
     "make_specs.py"
-  DATA "${CMAKE_CURRENT_BINARY_DIR}/service/passes/flag_descriptions.txt"
+  DATA
+    "${CMAKE_CURRENT_BINARY_DIR}/service/passes/flag_descriptions.txt"
   DEPS
     ::llvm_env
     compiler_gym::util::util
