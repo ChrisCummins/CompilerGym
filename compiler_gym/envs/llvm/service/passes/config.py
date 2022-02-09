@@ -258,6 +258,7 @@ _EXCLUDED_PASSES = {
     "AssumeBuilderPassLegacyPass",
     "ForceFunctionAttrsLegacyPass",
     "InferFunctionAttrsLegacyPass",
+    "LoopVersioningPass",  # TODO(cummins): Link error using LLVM 13.0.1
     "MemProfilerPass",
     "ModuleMemProfilerLegacyPass",
     "ModuleSanitizerCoverageLegacyPassPass",
