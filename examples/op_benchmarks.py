@@ -309,7 +309,7 @@ def observations(
         "InstCount",
         "Autophase",
         "Inst2vec",
-        "Programl",
+        # "Programl", TODO(cummins): ProGraML port.
         "IrInstructionCount",
         "ObjectTextSizeBytes",
         "Runtime",
@@ -392,7 +392,7 @@ def run(
         "InstCount",
         "Autophase",
         "Inst2vec",
-        "Programl",
+        # "Programl", TODO(cummins): ProGraML port.
         "IrInstructionCount",
         "ObjectTextSizeBytes",
         "Runtime",

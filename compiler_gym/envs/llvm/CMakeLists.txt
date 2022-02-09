@@ -13,19 +13,19 @@ cg_py_library(
   DATA
     compiler_gym::envs::llvm::service::service
   DEPS
-    ::compute_observation
+    # ::compute_observation
     ::llvm_benchmark
     ::llvm_env
     compiler_gym::util::util
   PUBLIC
 )
 
-cg_py_library(
-  NAME compute_observation
-  SRCS compute_observation.py
-  DATA compiler_gym::envs::llvm::service::compute_observation-files
-  DEPS compiler_gym::util::util
-)
+# cg_py_library(
+#   NAME compute_observation
+#   SRCS compute_observation.py
+#   DATA compiler_gym::envs::llvm::service::compute_observation-files
+#   DEPS compiler_gym::util::util
+# )
 
 cg_py_library(
   NAME

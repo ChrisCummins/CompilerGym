@@ -14,8 +14,9 @@
 #include "compiler_gym/third_party/llvm/InstCount.h"
 #include "compiler_gym/util/EnumUtil.h"
 #include "nlohmann/json.hpp"
-#include "programl/graph/format/node_link_graph.h"
-#include "programl/proto/program_graph.pb.h"
+// TODO(cummins): ProGraML port.
+// #include "programl/graph/format/node_link_graph.h"
+// #include "programl/proto/program_graph.pb.h"
 
 using nlohmann::json;
 
@@ -116,36 +117,37 @@ std::vector<ObservationSpace> getLlvmObservationSpaceList() {
             ->Add(low.begin(), low.end());
         break;
       }
-      case LlvmObservationSpace::PROGRAML: {
-        // ProGraML serializes the graph to JSON.
-        space.mutable_string_value()->mutable_length_range()->set_min(0);
-        observationSpace.set_deterministic(true);
-        observationSpace.set_platform_dependent(false);
-        programl::ProgramGraph graph;
-        json nodeLinkGraph;
-        CHECK(programl::graph::format::ProgramGraphToNodeLinkGraph(graph, &nodeLinkGraph).ok())
-            << "Failed to serialize default ProGraML graph";
-        Opaque opaque;
-        opaque.set_format("json://networkx/MultiDiGraph");
-        *opaque.mutable_data() = nodeLinkGraph.dump();
-        observationSpace.mutable_default_observation()->mutable_any_value()->PackFrom(opaque);
-        break;
-      }
-      case LlvmObservationSpace::PROGRAML_JSON: {
-        // ProGraML serializes the graph to JSON.
-        space.mutable_string_value()->mutable_length_range()->set_min(0);
-        observationSpace.set_deterministic(true);
-        observationSpace.set_platform_dependent(false);
-        programl::ProgramGraph graph;
-        json nodeLinkGraph;
-        CHECK(programl::graph::format::ProgramGraphToNodeLinkGraph(graph, &nodeLinkGraph).ok())
-            << "Failed to serialize default ProGraML graph";
-        Opaque opaque;
-        opaque.set_format("json://");
-        *opaque.mutable_data() = nodeLinkGraph.dump();
-        observationSpace.mutable_default_observation()->mutable_any_value()->PackFrom(opaque);
-        break;
-      }
+      // TODO(cummins): ProGraML port.
+      // case LlvmObservationSpace::PROGRAML: {
+      //   // ProGraML serializes the graph to JSON.
+      //   space.mutable_string_value()->mutable_length_range()->set_min(0);
+      //   observationSpace.set_deterministic(true);
+      //   observationSpace.set_platform_dependent(false);
+      //   programl::ProgramGraph graph;
+      //   json nodeLinkGraph;
+      //   CHECK(programl::graph::format::ProgramGraphToNodeLinkGraph(graph, &nodeLinkGraph).ok())
+      //       << "Failed to serialize default ProGraML graph";
+      //   Opaque opaque;
+      //   opaque.set_format("json://networkx/MultiDiGraph");
+      //   *opaque.mutable_data() = nodeLinkGraph.dump();
+      //   observationSpace.mutable_default_observation()->mutable_any_value()->PackFrom(opaque);
+      //   break;
+      // }
+      // case LlvmObservationSpace::PROGRAML_JSON: {
+      //   // ProGraML serializes the graph to JSON.
+      //   space.mutable_string_value()->mutable_length_range()->set_min(0);
+      //   observationSpace.set_deterministic(true);
+      //   observationSpace.set_platform_dependent(false);
+      //   programl::ProgramGraph graph;
+      //   json nodeLinkGraph;
+      //   CHECK(programl::graph::format::ProgramGraphToNodeLinkGraph(graph, &nodeLinkGraph).ok())
+      //       << "Failed to serialize default ProGraML graph";
+      //   Opaque opaque;
+      //   opaque.set_format("json://");
+      //   *opaque.mutable_data() = nodeLinkGraph.dump();
+      //   observationSpace.mutable_default_observation()->mutable_any_value()->PackFrom(opaque);
+      //   break;
+      // }
       case LlvmObservationSpace::CPU_INFO: {
         // Hardware info is returned as a JSON
         space.mutable_string_value()->mutable_length_range()->set_min(0);

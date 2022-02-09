@@ -115,37 +115,37 @@ cg_cc_library(
   PUBLIC
 )
 
-llvm_map_components_to_libnames(_LLVM_LIBS core support irreader)
-cg_cc_binary(
-  NAME compute_observation
-  SRCS ComputeObservation.cc
-  COPTS
-    "-DGOOGLE_PROTOBUF_NO_RTTI"
-    "-fno-rtti"
-  DEPS
-    ::BenchmarkFactory
-    ::Observation
-    ::ObservationSpaces
-    compiler_gym::service::proto::compiler_gym_service_cc
-  ABS_DEPS
-    Boost::filesystem
-    glog::glog
-    ${_LLVM_LIBS}
-    magic_enum
-  INCLUDES
-    ${LLVM_INCLUDE_DIRS}
-  DEFINES
-    ${LLVM_DEFINITIONS}
-)
+# llvm_map_components_to_libnames(_LLVM_LIBS core support irreader)
+# cg_cc_binary(
+#   NAME compute_observation
+#   SRCS ComputeObservation.cc
+#   COPTS
+#     "-DGOOGLE_PROTOBUF_NO_RTTI"
+#     "-fno-rtti"
+#   DEPS
+#     ::BenchmarkFactory
+#     ::Observation
+#     ::ObservationSpaces
+#     compiler_gym::service::proto::compiler_gym_service_cc
+#   ABS_DEPS
+#     Boost::filesystem
+#     glog::glog
+#     ${_LLVM_LIBS}
+#     magic_enum
+#   INCLUDES
+#     ${LLVM_INCLUDE_DIRS}
+#   DEFINES
+#     ${LLVM_DEFINITIONS}
+# )
 
-set(_FILES "${CMAKE_CURRENT_BINARY_DIR}/compute_observation")
-if(DARWIN)
-  message(FATAL_ERROR "TODO(boian): implement")
-endif()
-cg_filegroup(
-  NAME compute_observation-files
-  FILES ${_FILES}
-)
+# set(_FILES "${CMAKE_CURRENT_BINARY_DIR}/compute_observation")
+# if(DARWIN)
+#   message(FATAL_ERROR "TODO(boian): implement")
+# endif()
+# cg_filegroup(
+#   NAME compute_observation-files
+#   FILES ${_FILES}
+# )
 
 llvm_map_components_to_libnames(_LLVM_LIBS core transformutils ipo)
 cg_cc_library(
@@ -212,9 +212,10 @@ cg_cc_library(
     ${_LLVM_LIBS}
     magic_enum
     nlohmann_json::nlohmann_json
-    ProGraML::graph::format::node_link_graph
-    ProGraML::ir::llvm::llvm-10
-    ProGraML::proto::programl_cc
+    # TODO(cummins): ProGraml port.
+    # ProGraML::graph::format::node_link_graph
+    # ProGraML::ir::llvm::llvm-10
+    # ProGraML::proto::programl_cc
     CpuInfo::cpuinfo
     Clog::libclog
   INCLUDES
@@ -246,9 +247,10 @@ cg_cc_library(
       ${_LLVM_LIBS}
       magic_enum
       nlohmann_json::nlohmann_json
-      ProGraML::graph::format::node_link_graph
-      ProGraML::ir::llvm::llvm-10
-      ProGraML::proto::programl_cc
+      # TODO(cummins): ProGraml port.
+      # ProGraML::graph::format::node_link_graph
+      # ProGraML::ir::llvm::llvm-10
+      # ProGraML::proto::programl_cc
       Clog::libclog
   INCLUDES
     ${LLVM_INCLUDE_DIRS}
@@ -272,7 +274,8 @@ cg_cc_library(
     glog::glog
     magic_enum
     nlohmann_json::nlohmann_json
-    ProGraML::graph::format::node_link_graph
-    ProGraML::proto::programl_cc
+    # TODO(cummins): ProGraml port.
+    # ProGraML::graph::format::node_link_graph
+    # ProGraML::proto::programl_cc
   PUBLIC
 )

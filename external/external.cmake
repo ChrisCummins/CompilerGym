@@ -453,19 +453,20 @@ else()
   find_package(nlohmann_json REQUIRED)
 endif()
 
-# === ProGraML ===
-# https://github.com/ChrisCummins/ProGraML
+# TODO(cummins): Drop ProGraML.
+# # === ProGraML ===
+# # https://github.com/ChrisCummins/ProGraML
 
-build_external_cmake_project(
-  NAME programl
-  SRC_DIR "${CMAKE_CURRENT_LIST_DIR}/programl")
-list(PREPEND CMAKE_PREFIX_PATH
-  "${CMAKE_CURRENT_BINARY_DIR}/external/programl/programl/src/programl/bazel-bin"
-  "${CMAKE_CURRENT_BINARY_DIR}/external/programl/programl/src/programl/bazel-bin/external/labm8"
-  "${CMAKE_CURRENT_BINARY_DIR}/external/programl/programl/src/programl/bazel-programl"
-  "${CMAKE_CURRENT_BINARY_DIR}/external/programl/programl/src/programl/bazel-programl/external/labm8"
-  )
-find_package(Labm8 REQUIRED)
-find_package(ProGraML REQUIRED)
+# build_external_cmake_project(
+#   NAME programl
+#   SRC_DIR "${CMAKE_CURRENT_LIST_DIR}/programl")
+# list(PREPEND CMAKE_PREFIX_PATH
+#   "${CMAKE_CURRENT_BINARY_DIR}/external/programl/programl/src/programl/bazel-bin"
+#   "${CMAKE_CURRENT_BINARY_DIR}/external/programl/programl/src/programl/bazel-bin/external/labm8"
+#   "${CMAKE_CURRENT_BINARY_DIR}/external/programl/programl/src/programl/bazel-programl"
+#   "${CMAKE_CURRENT_BINARY_DIR}/external/programl/programl/src/programl/bazel-programl/external/labm8"
+#   )
+# find_package(Labm8 REQUIRED)
+# find_package(ProGraML REQUIRED)
 
 FetchContent_MakeAvailable(${FETCH_CONTENT_LIST})

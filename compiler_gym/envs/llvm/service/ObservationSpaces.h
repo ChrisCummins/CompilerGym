@@ -46,26 +46,27 @@ enum class LlvmObservationSpace {
    *     deep reinforcement learning. FCCM.
    */
   AUTOPHASE,
-  /**
-   * Returns the graph representation of a program as a networkx Graph.
-   *
-   * From:
-   *
-   *     Cummins, C., Fisches, Z. V., Ben-Nun, T., Hoefler, T., & Leather, H.
-   *     (2020). ProGraML: Graph-based Deep Learning for Program Optimization
-   *     and Analysis. ArXiv:2003.10536. https://arxiv.org/abs/2003.10536
-   */
-  PROGRAML,
-  /**
-   * Returns the graph representation of a program as a JSON node-link graph.
-   *
-   * From:
-   *
-   *     Cummins, C., Fisches, Z. V., Ben-Nun, T., Hoefler, T., & Leather, H.
-   *     (2020). ProGraML: Graph-based Deep Learning for Program Optimization
-   *     and Analysis. ArXiv:2003.10536. https://arxiv.org/abs/2003.10536
-   */
-  PROGRAML_JSON,
+  // TODO(cummins): ProGraML port.
+  // /**
+  //  * Returns the graph representation of a program as a networkx Graph.
+  //  *
+  //  * From:
+  //  *
+  //  *     Cummins, C., Fisches, Z. V., Ben-Nun, T., Hoefler, T., & Leather, H.
+  //  *     (2020). ProGraML: Graph-based Deep Learning for Program Optimization
+  //  *     and Analysis. ArXiv:2003.10536. https://arxiv.org/abs/2003.10536
+  //  */
+  // PROGRAML,
+  // /**
+  //  * Returns the graph representation of a program as a JSON node-link graph.
+  //  *
+  //  * From:
+  //  *
+  //  *     Cummins, C., Fisches, Z. V., Ben-Nun, T., Hoefler, T., & Leather, H.
+  //  *     (2020). ProGraML: Graph-based Deep Learning for Program Optimization
+  //  *     and Analysis. ArXiv:2003.10536. https://arxiv.org/abs/2003.10536
+  //  */
+  // PROGRAML_JSON,
   /** A JSON dictionary of properties describing the CPU. */
   CPU_INFO,
   /** The number of LLVM-IR instructions in the current module. */

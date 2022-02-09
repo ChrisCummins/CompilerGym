@@ -8,7 +8,6 @@ import sys
 from typing import Any, Dict, List
 
 import gym
-import networkx as nx
 import numpy as np
 import pytest
 from flaky import flaky
@@ -50,8 +49,9 @@ def test_observation_spaces(env: LlvmEnv):
         "InstCountNormDict",
         "Autophase",
         "AutophaseDict",
-        "Programl",
-        "ProgramlJson",
+        # TODO(cummins): ProGraML port.
+        # "Programl",
+        # "ProgramlJson",
         "CpuInfo",
         "Inst2vecPreprocessedText",
         "Inst2vecEmbeddingIndices",
@@ -405,34 +405,35 @@ def test_autophase_dict_observation_space(env: LlvmEnv):
     assert not space.platform_dependent
 
 
-def test_programl_observation_space(env: LlvmEnv):
-    env.reset("cbench-v1/crc32")
-    key = "Programl"
-    space = env.observation.spaces[key]
-    assert isinstance(space.space, Sequence)
-    graph: nx.MultiDiGraph = env.observation[key]
-    assert isinstance(graph, nx.MultiDiGraph)
+# TODO(cummins): ProGraML port.
+# def test_programl_observation_space(env: LlvmEnv):
+#     env.reset("cbench-v1/crc32")
+#     key = "Programl"
+#     space = env.observation.spaces[key]
+#     assert isinstance(space.space, Sequence)
+#     graph: nx.MultiDiGraph = env.observation[key]
+#     assert isinstance(graph, nx.MultiDiGraph)
 
-    assert graph.number_of_nodes() == 512
-    assert graph.number_of_edges() == 907
-    assert graph.nodes[0] == {
-        "block": 0,
-        "function": 0,
-        "text": "[external]",
-        "type": 0,
-    }
+#     assert graph.number_of_nodes() == 512
+#     assert graph.number_of_edges() == 907
+#     assert graph.nodes[0] == {
+#         "block": 0,
+#         "function": 0,
+#         "text": "[external]",
+#         "type": 0,
+#     }
 
-    assert space.deterministic
-    assert not space.platform_dependent
+#     assert space.deterministic
+#     assert not space.platform_dependent
 
 
-def test_programl_json_observation_space(env: LlvmEnv):
-    env.reset("cbench-v1/crc32")
-    key = "ProgramlJson"
-    space = env.observation.spaces[key]
-    assert isinstance(space.space, Sequence)
-    graph: Dict[str, Any] = env.observation[key]
-    assert isinstance(graph, dict)
+# def test_programl_json_observation_space(env: LlvmEnv):
+#     env.reset("cbench-v1/crc32")
+#     key = "ProgramlJson"
+#     space = env.observation.spaces[key]
+#     assert isinstance(space.space, Sequence)
+#     graph: Dict[str, Any] = env.observation[key]
+#     assert isinstance(graph, dict)
 
 
 def test_cpuinfo_observation_space(env: LlvmEnv):
