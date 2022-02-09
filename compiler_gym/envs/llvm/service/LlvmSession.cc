@@ -39,8 +39,8 @@
 #include "llvm/Support/TargetSelect.h"
 #include "llvm/Support/raw_ostream.h"
 #include "nlohmann/json.hpp"
-#include "programl/graph/format/node_link_graph.h"
-#include "programl/ir/llvm/llvm.h"
+// #include "programl/graph/format/node_link_graph.h"
+// #include "programl/ir/llvm/llvm.h"
 
 namespace fs = boost::filesystem;
 namespace bp = boost::process;

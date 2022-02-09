@@ -23,8 +23,9 @@
 #include "llvm/IR/Module.h"
 #include "llvm/Support/raw_ostream.h"
 #include "nlohmann/json.hpp"
-#include "programl/graph/format/node_link_graph.h"
-#include "programl/ir/llvm/llvm.h"
+// TODO(cummins): ProGraML port.
+// #include "programl/graph/format/node_link_graph.h"
+// #include "programl/ir/llvm/llvm.h"
 
 namespace fs = boost::filesystem;
 
@@ -34,7 +35,7 @@ using grpc::Status;
 using grpc::StatusCode;
 using nlohmann::json;
 
-const programl::ProgramGraphOptions programlOptions;
+// const programl::ProgramGraphOptions programlOptions;
 
 Status setObservation(LlvmObservationSpace space, const fs::path& workingDirectory,
                       Benchmark& benchmark, Event& reply) {
@@ -88,29 +89,30 @@ Status setObservation(LlvmObservationSpace space, const fs::path& workingDirecto
       *reply.mutable_int64_tensor()->mutable_value() = {features.begin(), features.end()};
       break;
     }
-    case LlvmObservationSpace::PROGRAML:
-    case LlvmObservationSpace::PROGRAML_JSON: {
-      // Build the ProGraML graph.
-      programl::ProgramGraph graph;
-      auto status =
-          programl::ir::llvm::BuildProgramGraph(benchmark.module(), &graph, programlOptions);
-      if (!status.ok()) {
-        return Status(StatusCode::INTERNAL, status.error_message());
-      }
+    // TODO(cummins): ProGraML port.
+    // case LlvmObservationSpace::PROGRAML:
+    // case LlvmObservationSpace::PROGRAML_JSON: {
+    //   // Build the ProGraML graph.
+    //   programl::ProgramGraph graph;
+    //   auto status =
+    //       programl::ir::llvm::BuildProgramGraph(benchmark.module(), &graph, programlOptions);
+    //   if (!status.ok()) {
+    //     return Status(StatusCode::INTERNAL, status.error_message());
+    //   }
 
-      // Serialize the graph to a JSON node link graph.
-      json nodeLinkGraph;
-      status = programl::graph::format::ProgramGraphToNodeLinkGraph(graph, &nodeLinkGraph);
-      if (!status.ok()) {
-        return Status(StatusCode::INTERNAL, status.error_message());
-      }
-      Opaque opaque;
-      opaque.set_format(space == LlvmObservationSpace::PROGRAML ? "json://networkx/MultiDiGraph"
-                                                                : "json://");
-      *opaque.mutable_data() = nodeLinkGraph.dump();
-      reply.mutable_any_value()->PackFrom(opaque);
-      break;
-    }
+    //   // Serialize the graph to a JSON node link graph.
+    //   json nodeLinkGraph;
+    //   status = programl::graph::format::ProgramGraphToNodeLinkGraph(graph, &nodeLinkGraph);
+    //   if (!status.ok()) {
+    //     return Status(StatusCode::INTERNAL, status.error_message());
+    //   }
+    //   Opaque opaque;
+    //   opaque.set_format(space == LlvmObservationSpace::PROGRAML ? "json://networkx/MultiDiGraph"
+    //                                                             : "json://");
+    //   *opaque.mutable_data() = nodeLinkGraph.dump();
+    //   reply.mutable_any_value()->PackFrom(opaque);
+    //   break;
+    // }
     case LlvmObservationSpace::CPU_INFO: {
       json hwinfo;
       auto caches = {
