@@ -10,24 +10,6 @@ include(build_external_cmake_project)
 
 unset(FETCH_CONTENT_LIST)
 
-# === Google test ===
-
-set(COMPILER_GYM_GTEST_PROVIDER "internal" CACHE STRING "Find or build gtest together with Compiler Gym.")
-set_property(CACHE COMPILER_GYM_GTEST_PROVIDER PROPERTY STRINGS "internal" "external")
-if(COMPILER_GYM_GTEST_PROVIDER STREQUAL "internal")
-  FetchContent_Declare(
-      gtest
-      PREFIX "${CMAKE_CURRENT_BINARY_DIR}/external/gtest"
-      GIT_REPOSITORY "https://github.com/google/googletest.git"
-      GIT_TAG 703bd9caab50b139428cea1aaff9974ebee5742e #tag release-1.10.0
-  )
-  FetchContent_MakeAvailable(gtest)
-  add_library(GTest::GTest ALIAS gtest)
-  add_library(GTest::Main ALIAS gtest_main)
-else()
-  find_package(GTest REQUIRED)
-endif()
-
 # === Google benchmark ===
 
 set(COMPILER_GYM_BENCHMARK_PROVIDER "internal" CACHE STRING "Find or build benchmark together with Compiler Gym.")
@@ -99,12 +81,36 @@ endif()
 
 set(COMPILER_GYM_LLVM_PROVIDER "internal" CACHE STRING "Find or build llvm together with Compiler Gym.")
 set_property(CACHE COMPILER_GYM_LLVM_PROVIDER PROPERTY STRINGS "internal" "external")
-build_external_cmake_project(
-  NAME llvm
-  SRC_DIR "${CMAKE_CURRENT_LIST_DIR}/llvm"
-  CONFIG_ARGS "-DCOMPILER_GYM_LLVM_PROVIDER=${COMPILER_GYM_LLVM_PROVIDER}")
-# set(LLVM_SRC_DIR "${CMAKE_CURRENT_BINARY_DIR}/external/llvm/llvm/src/llvm")
-find_package(LLVM 13.0.1 EXACT REQUIRED)
+if(COMPILER_GYM_PROTOBUF_PROVIDER STREQUAL "internal")
+  build_external_cmake_project(
+    NAME llvm
+    SRC_DIR "${CMAKE_CURRENT_LIST_DIR}/llvm"
+    CONFIG_ARGS "-DCOMPILER_GYM_LLVM_PROVIDER=${COMPILER_GYM_LLVM_PROVIDER}"
+  )
+  find_package(LLVM 13.0.1 EXACT REQUIRED)
+
+  # === Google test ===
+  # External LLVMs define this.
+  set(COMPILER_GYM_GTEST_PROVIDER "internal" CACHE STRING "Find or build gtest together with Compiler Gym.")
+  set_property(CACHE COMPILER_GYM_GTEST_PROVIDER PROPERTY STRINGS "internal" "external")
+  if(COMPILER_GYM_GTEST_PROVIDER STREQUAL "internal")
+    FetchContent_Declare(
+        gtest
+        PREFIX "${CMAKE_CURRENT_BINARY_DIR}/external/gtest"
+        GIT_REPOSITORY "https://github.com/google/googletest.git"
+        GIT_TAG 703bd9caab50b139428cea1aaff9974ebee5742e #tag release-1.10.0
+    )
+    FetchContent_MakeAvailable(gtest)
+    add_library(GTest::GTest ALIAS gtest)
+    add_library(GTest::Main ALIAS gtest_main)
+  else()
+    find_package(GTest REQUIRED)
+  endif()
+else()
+  find_package(LLVM REQUIRED CONFIG)
+endif()
+message(STATUS "Using LLVM ${LLVM_PACKAGE_VERSION}")
+message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
 
 # === Protocol buffers ===
 
