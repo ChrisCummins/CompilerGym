@@ -41,7 +41,7 @@ ExternalProject_Add(
   GIT_TAG 75e33f71c2dae584b13a7d1186ae0a038ba98838 #tag llvmorg-13.0.1
   SOURCE_SUBDIR llvm
   CMAKE_ARGS
-    -G Ninja
+    -G "${CMAKE_GENERATOR}"
     -C "${CMAKE_CURRENT_BINARY_DIR}/llvm_initial_cache.cmake"
     "-DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}"
     -DLLVM_ABI_BREAKING_CHECKS=FORCE_OFF
