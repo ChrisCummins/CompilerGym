@@ -33,22 +33,22 @@ cg_cc_library(
   PUBLIC
 )
 
-llvm_map_components_to_libnames(_LLVM_LIBS analysis core irreader support)
-cg_cc_binary(
-  NAME
-    compute_autophase
-  SRCS
-    "compute_autophase.cc"
-  COPTS
-    "-DGOOGLE_PROTOBUF_NO_RTTI"
-    "-fno-rtti"
-  DEPS
-    ::InstCount
-  ABS_DEPS
-    glog::glog
-    ${_LLVM_LIBS}
-  INCLUDES
-    ${LLVM_INCLUDE_DIRS}
-  DEFINES
-    ${LLVM_DEFINITIONS}
-)
+# llvm_map_components_to_libnames(_LLVM_LIBS analysis core irreader support)
+# cg_cc_binary(
+#   NAME
+#     compute_autophase
+#   SRCS
+#     "compute_autophase.cc"
+#   COPTS
+#     "-DGOOGLE_PROTOBUF_NO_RTTI"
+#     "-fno-rtti"
+#   DEPS
+#     ::InstCount
+#   ABS_DEPS
+#     glog::glog
+#     ${_LLVM_LIBS}
+#   INCLUDES
+#     ${LLVM_INCLUDE_DIRS}
+#   DEFINES
+#     ${LLVM_DEFINITIONS}
+# )
