@@ -15,23 +15,23 @@ cg_py_library(
   PUBLIC
 )
 
-llvm_map_components_to_libnames(llvm_libs support irreader core)
-cg_cc_binary(
-  NAME
-    compute_ir_instruction_count
-  SRCS
-    "compute_ir_instruction_count.cc"
-  COPTS
-    "-DGOOGLE_PROTOBUF_NO_RTTI"
-    "-fno-rtti"
-  ABS_DEPS
-    glog::glog
-    ${llvm_libs}
-  INCLUDES
-    ${LLVM_INCLUDE_DIRS}
-  DEFINES
-    ${LLVM_DEFINITIONS}
-)
+# llvm_map_components_to_libnames(llvm_libs support irreader core)
+# cg_cc_binary(
+#   NAME
+#     compute_ir_instruction_count
+#   SRCS
+#     "compute_ir_instruction_count.cc"
+#   COPTS
+#     "-DGOOGLE_PROTOBUF_NO_RTTI"
+#     "-fno-rtti"
+#   ABS_DEPS
+#     glog::glog
+#     ${llvm_libs}
+#   INCLUDES
+#     ${LLVM_INCLUDE_DIRS}
+#   DEFINES
+#     ${LLVM_DEFINITIONS}
+# )
 
 cg_py_library(
   NAME
@@ -62,11 +62,11 @@ cg_cc_library(
   PUBLIC
 )
 
-cg_cc_binary(
-  NAME
-    PrintInstCountFeatureNames
-  SRCS
-    "PrintInstCountFeatureNames.cc"
-  DEPS
-    ::InstCount
-)
+# cg_cc_binary(
+#   NAME
+#     PrintInstCountFeatureNames
+#   SRCS
+#     "PrintInstCountFeatureNames.cc"
+#   DEPS
+#     ::InstCount
+# )
