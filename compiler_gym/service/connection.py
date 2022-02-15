@@ -6,6 +6,7 @@
 import logging
 import os
 import random
+import shlex
 import shutil
 import subprocess
 import sys
@@ -16,8 +17,6 @@ from time import sleep, time
 from typing import Dict, Iterable, List, Optional, TypeVar, Union
 
 import grpc
-from pydantic import BaseModel
-
 from compiler_gym.service.proto import (
     ActionSpace,
     CompilerGymServiceStub,
@@ -33,6 +32,7 @@ from compiler_gym.util.runfiles_path import (
 )
 from compiler_gym.util.shell_format import plural
 from compiler_gym.util.truncate import truncate_lines
+from pydantic import BaseModel
 
 GRPC_CHANNEL_OPTIONS = [
     # Disable the inbound message length filter to allow for large messages such
@@ -381,7 +381,10 @@ class ManagedConnection(Connection):
         # Add any custom environment variables
         env.update(script_env)
 
-        logger.debug("Exec %s", cmd)
+        env_prefix = " ".join(f"{k}={v}" for k, v in env.items())
+        if env_prefix:
+            env_prefix += " "
+        logger.debug("Exec: %s%s", env_prefix, shlex.join(cmd))
         self.process = subprocess.Popen(
             cmd,
             env=env,
