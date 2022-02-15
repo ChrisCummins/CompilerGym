@@ -3,6 +3,7 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 """Register the LLVM environments."""
+import os
 from itertools import product
 
 # from compiler_gym.envs.llvm.compute_observation import compute_observation
@@ -14,6 +15,7 @@ from compiler_gym.envs.llvm.llvm_benchmark import (
 )
 from compiler_gym.envs.llvm.llvm_env import LlvmEnv
 from compiler_gym.envs.llvm.specs import observation_spaces, reward_spaces
+from compiler_gym.service import ConnectionOpts
 from compiler_gym.util.registration import register
 from compiler_gym.util.runfiles_path import runfiles_path
 
@@ -44,6 +46,12 @@ def _register_llvm_gym_service():
         entry_point="compiler_gym.envs.llvm:LlvmEnv",
         kwargs={
             "service": LLVM_SERVICE_BINARY,
+            "connection_settings": ConnectionOpts(
+                script_env={
+                    # TODO(cummins): Horrible hack to build against custom LLVM.
+                    "LD_PRELOAD": os.path.expanduser("~/tmp/libstdc++.so.6")
+                }
+            ),
         },
     )
 

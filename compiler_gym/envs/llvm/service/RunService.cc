@@ -16,14 +16,11 @@ using namespace compiler_gym::llvm_service;
 namespace {
 
 void initLlvm() {
-  llvm::InitializeAllTargets();
-  llvm::InitializeAllTargetMCs();
-  llvm::InitializeAllAsmPrinters();
-  llvm::InitializeAllAsmParsers();
+  llvm::InitializeNativeTarget();
 
   // Initialize passes.
   llvm::PassRegistry& Registry = *llvm::PassRegistry::getPassRegistry();
-#if 0  // TODO(cummins): The initialize pass routine is LLVM-version specific.
+#if 0  // TODO(cummins): Replacing LLVM 10's init with LLVM 13's.
   llvm::initializeCore(Registry);
   llvm::initializeCoroutines(Registry);
   llvm::initializeScalarOpts(Registry);
