@@ -19,6 +19,7 @@
 #include "compiler_gym/util/RunfilesPath.h"
 #include "compiler_gym/util/Subprocess.h"
 #include "compiler_gym/util/Unreachable.h"
+#include "llvm/Bitcode/BitcodeWriter.h"
 #include "llvm/IR/LegacyPassManager.h"
 #include "llvm/Transforms/IPO.h"
 #include "llvm/Transforms/IPO/PassManagerBuilder.h"
@@ -41,15 +42,70 @@ std::string moduleToString(llvm::Module& module) {
   return str;
 }
 
-// For the experimental binary .text size cost, getTextSizeInBytes() is extended
-// to support a list of additional args to pass to clang.
-#ifdef COMPILER_GYM_EXPERIMENTAL_TEXT_SIZE_COST
-Status getTextSizeInBytes(llvm::Module& module, int64_t* value,
-                          const std::vector<std::string>& clangArgs,
-                          const fs::path& workingDirectory) {
-#else
-Status getTextSizeInBytes(llvm::Module& module, int64_t* value, const fs::path& workingDirectory) {
-#endif
+util::LocalShellCommand getBuildCommand(const fs::path& workingDirectory,
+                                        const BenchmarkDynamicConfig& dynamicConfig) {
+  Command buildCommand;
+  buildCommand.CopyFrom(dynamicConfig.buildCommand().proto());
+
+  if (!buildCommand.argument_size()) {
+    buildCommand.add_argument(util::getSiteDataPath("llvm-v0/bin/clang").string());
+    buildCommand.add_argument((dynamicConfig.scratchDirectory() / "out.bc").string());
+    buildCommand.add_argument("-c");
+    buildCommand.add_argument("-o");
+    buildCommand.add_argument((dynamicConfig.scratchDirectory() / "out.o").string());
+    buildCommand.add_outfile((dynamicConfig.scratchDirectory() / "out.o").string());
+  }
+
+  if (!buildCommand.timeout_seconds()) {
+    buildCommand.set_timeout_seconds(60);
+  }
+
+  return util::LocalShellCommand(buildCommand);
+}
+
+Status writeBitcodeFile(const llvm::Module& module, const fs::path& path) {
+  std::error_code error;
+  llvm::raw_fd_ostream outfile(path.string(), error);
+  if (error.value()) {
+    return Status(StatusCode::INTERNAL,
+                  fmt::format("Failed to write bitcode file: {}", path.string()));
+  }
+  llvm::WriteBitcodeToFile(module, outfile);
+  return Status::OK;
+}
+
+Status getTextSizeInBytes(llvm::Module& module, int64_t* value, const fs::path& workingDirectory,
+                          const BenchmarkDynamicConfig& dynamicConfig) {
+  const util::LocalShellCommand buildCommand = getBuildCommand(workingDirectory, dynamicConfig);
+
+  // TODO(cummins):
+  // if (chdir(dynamicConfig.scratchDirectory().string().c_str())) {
+  //   return Status(StatusCode::INTERNAL,
+  //                 fmt::format("Failed to set working directory: {}",
+  //                 dynamicConfig.scratchDirectory().string()));
+  // }
+
+  // Check that the required sources exist.
+  Status status = buildCommand.checkInfiles();
+  if (!status.ok()) {
+    return Status(StatusCode::INVALID_ARGUMENT, status.error_message());
+  }
+
+  // Write the bitcode to a file.
+  if (buildCommand.outfiles().size() != 1) {
+    return Status(StatusCode::INVALID_ARGUMENT,
+                  fmt::format("Compilation job produces {} files. Expected 1",
+                              buildCommand.outfiles().size()));
+  }
+  const auto& outfile = fs::path(buildCommand.outfiles()[0]);
+  status = writeBitcodeFile(module, outfile);
+  if (!status.ok()) {
+    return Status(StatusCode::INVALID_ARGUMENT, status.error_message());
+  }
+
+  // Run the build job.
+  RETURN_IF_ERROR(buildCommand.checkCall());
+
   const auto clangPath = util::getSiteDataPath("llvm-v0/bin/clang");
   const auto llvmSizePath = util::getSiteDataPath("llvm-v0/bin/llvm-size");
   DCHECK(fs::exists(clangPath)) << fmt::format("File not found: {}", clangPath.string());
@@ -211,9 +267,9 @@ Status setCost(const LlvmCostFunction& costFunction, llvm::Module& module,
     case LlvmCostFunction::OBJECT_TEXT_SIZE_BYTES: {
       int64_t size;
 #ifdef COMPILER_GYM_EXPERIMENTAL_TEXT_SIZE_COST
-      RETURN_IF_ERROR(getTextSizeInBytes(module, &size, {"-c"}, workingDirectory));
+      RETURN_IF_ERROR(getTextSizeInBytes(module, &size, {"-c"}, workingDirectory, dynamicConfig));
 #else
-      RETURN_IF_ERROR(getTextSizeInBytes(module, &size, workingDirectory));
+      RETURN_IF_ERROR(getTextSizeInBytes(module, &size, workingDirectory, dynamicConfig));
 #endif
       *cost = static_cast<double>(size);
       break;
