@@ -375,6 +375,16 @@ install: |  init-runtime-requirements bazel-build pip-install
 .PHONY: pip-install install
 
 
+# TODO(cummins): Work-in-progress makefile rule to rebuild wheel using CMake.
+# This is not for public consumption! Just for debugging / development.
+experimental-unstable-cmake-install:
+	rm -f build/py_pkg/dist/compiler_gym-*.whl
+	cmake --build build
+	pip install --force-reinstall build/py_pkg/dist/compiler_gym-*.whl
+
+.PHONY: experimental-unstable-cmake-install
+
+
 ##############
 # Tidying up #
 ##############
