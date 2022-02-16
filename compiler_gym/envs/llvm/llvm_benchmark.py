@@ -438,8 +438,9 @@ class BenchmarkFromCommandLine(Benchmark):
             if build_command[i] == "-o":
                 del build_command[i + 1]
                 del build_command[i]
-        build_command += ["-o", str(invocation.output_path), "-xir", "$IN"]
+        build_command += ["-xir", "$IN", "-o", str(invocation.output_path)]
         self.proto.dynamic_config.build_cmd.argument[:] = build_command
+        self.proto.dynamic_config.build_cmd.outfile[:] = [str(invocation.output_path)]
 
     def compile(self, env, timeout: int = 60):
         with tempfile.NamedTemporaryFile(
@@ -452,7 +453,6 @@ class BenchmarkFromCommandLine(Benchmark):
             cmd = list(self.proto.dynamic_config.build_cmd.argument).copy()
             cmd = [bitcode_path if c == "$IN" else c for c in cmd]
 
-            print(f"$ {shlex.join(cmd)}")
             logger.debug(f"$ {shlex.join(cmd)}")
 
             with Popen(
