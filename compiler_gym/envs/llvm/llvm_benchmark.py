@@ -416,7 +416,7 @@ def make_benchmark(
 
 
 class BenchmarkFromCommandLine(Benchmark):
-    def __init__(self, command_line: List[str], bitcode: bytes):
+    def __init__(self, command_line: List[str], bitcode: bytes, timeout: int):
         uri = (
             f"benchmark://clang-v0/{urllib.parse.quote_plus(shlex.join(command_line))}"
         )
@@ -441,6 +441,7 @@ class BenchmarkFromCommandLine(Benchmark):
         build_command += ["-xir", "$IN", "-o", str(invocation.output_path)]
         self.proto.dynamic_config.build_cmd.argument[:] = build_command
         self.proto.dynamic_config.build_cmd.outfile[:] = [str(invocation.output_path)]
+        self.proto.dynamic_config.build_cmd.timeout_seconds = timeout
 
     def compile(self, env, timeout: int = 60):
         with tempfile.NamedTemporaryFile(
@@ -527,4 +528,4 @@ def make_benchmark_from_clang_command_line(
                 f"Running command: {shlex.join(emit_bitcode_command)}"
             )
 
-    return BenchmarkFromCommandLine(cmd, bitcode)
+    return BenchmarkFromCommandLine(cmd, bitcode, timeout)
