@@ -116,10 +116,8 @@ Status getTextSizeInBytes(const fs::path& file, int64_t* value) {
   return Status::OK;
 }
 
-Status getTextSizeInBytesUsingBuildCommand(llvm::Module& module, int64_t* value, const fs::path& workingDirectory,
-                                          const BenchmarkDynamicConfig& dynamicConfig) {
-  const util::LocalShellCommand& buildCommand = dynamicConfig.buildCommand();
-
+Status getTextSizeInBytes(llvm::Module& module, int64_t* value, const fs::path& workingDirectory,
+                          const util::LocalShellCommand& buildCommand) {
   if (buildCommand.outfiles().size() != 1) {
       return Status(StatusCode::INVALID_ARGUMENT,
                     fmt::format("Expected a single output from build job, actual: {}. Command: {}",
@@ -127,13 +125,8 @@ Status getTextSizeInBytesUsingBuildCommand(llvm::Module& module, int64_t* value,
   }
   const auto& outfile = buildCommand.outfiles()[0];
 
-  if (chdir(dynamicConfig.scratchDirectory().string().c_str())) {
-    return Status(StatusCode::INTERNAL,
-                  fmt::format("Failed to set working directory: {}", dynamicConfig.scratchDirectory().string()));
-  }
-
   // Write the bitcode to the expected place.
-  RETURN_IF_ERROR(writeBitcodeFile(module, dynamicConfig.scratchDirectory() / "out.bc"));
+  RETURN_IF_ERROR(writeBitcodeFile(module, "out.bc"));
 
   RETURN_IF_ERROR(buildCommand.checkInfiles());
   RETURN_IF_ERROR(buildCommand.checkCall());
@@ -142,12 +135,32 @@ Status getTextSizeInBytesUsingBuildCommand(llvm::Module& module, int64_t* value,
   return getTextSizeInBytes(outfile, value);
 }
 
-Status getTextSizeInBytes(llvm::Module& module, int64_t* value, const fs::path& workingDirectory,
-                          const BenchmarkDynamicConfig& dynamicConfig) {
-  // TODO(cummins): Replace getTextSizeInBytes() with getTextSizeInBytesUsingBuildCommand(), using a default build command if none is set.
-  if (dynamicConfig.isBuildable()) {
-    return getTextSizeInBytesUsingBuildCommand(module, value, workingDirectory, dynamicConfig);
+util::LocalShellCommand getBuildCommand(const BenchmarkDynamicConfig& dynamicConfig, bool compile_only) {
+  // Append the '-c' flag to compile-only jobs.
+  if (compile_only) {
+    Command newCommand;
+    newCommand.CopyFrom(dynamicConfig.buildCommand().proto());
+    newCommand.add_argument("-c");
+    return util::LocalShellCommand(newCommand);
   }
+  return dynamicConfig.buildCommand();
+}
+
+Status getTextSizeInBytes(llvm::Module& module, int64_t* value, const fs::path& workingDirectory,
+                          const BenchmarkDynamicConfig& dynamicConfig, bool compile_only=true) {
+  if (dynamicConfig.isBuildable()) {
+    if (chdir(dynamicConfig.scratchDirectory().string().c_str())) {
+      return Status(StatusCode::INTERNAL,
+                    fmt::format("Failed to set working directory: {}", dynamicConfig.scratchDirectory().string()));
+    }
+
+    const util::LocalShellCommand buildCommand = getBuildCommand(dynamicConfig, compile_only);
+    return getTextSizeInBytes(module, value, workingDirectory, buildCommand);
+  }
+
+  // TODO(cummins): Remove this legacy implementation by providing a default
+  // buildCommand for the dynamicConfig.
+  DCHECK(compile_only) << "Legacy getTextSizeInBytes() implementation only supports compile_only=true";
 
   const auto clangPath = util::getSiteDataPath("llvm-v0/bin/clang");
   const auto llvmSizePath = util::getSiteDataPath("llvm-v0/bin/llvm-size");
@@ -161,16 +174,8 @@ Status getTextSizeInBytes(llvm::Module& module, int64_t* value, const fs::path& 
   const auto tmpFile = fs::unique_path(workingDirectory / "obj-%%%%.o");
 
   try {
-// Use clang to compile the object file.
-#ifdef COMPILER_GYM_EXPERIMENTAL_TEXT_SIZE_COST
-    std::string clangCmd = fmt::format("{} -w -xir - -o {}", clangPath.string(), tmpFile.string());
-    for (const auto& arg : clangArgs) {
-      clangCmd += " " + arg;
-    }
-#else
     const std::string clangCmd =
         fmt::format("{} -w -xir - -o {} -c", clangPath.string(), tmpFile.string());
-#endif
 
     boost::asio::io_context clangContext;
     auto stdinBuffer{boost::asio::buffer(ir)};
@@ -258,30 +263,16 @@ Status setCost(const LlvmCostFunction& costFunction, llvm::Module& module,
     }
     case LlvmCostFunction::OBJECT_TEXT_SIZE_BYTES: {
       int64_t size;
-#ifdef COMPILER_GYM_EXPERIMENTAL_TEXT_SIZE_COST
-      RETURN_IF_ERROR(getTextSizeInBytes(module, &size, {"-c"}, workingDirectory, dynamicConfig));
-#else
-      RETURN_IF_ERROR(getTextSizeInBytes(module, &size, workingDirectory, dynamicConfig));
-#endif
+      RETURN_IF_ERROR(getTextSizeInBytes(module, &size, workingDirectory, dynamicConfig, /*compile_only=*/true));
       *cost = static_cast<double>(size);
       break;
     }
-#ifdef COMPILER_GYM_EXPERIMENTAL_TEXT_SIZE_COST
-
-#ifdef __APPLE__
-#define SYSTEM_LIBRARIES \
-  "-L"                   \
-  "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib"
-#else
-#define SYSTEM_LIBRARIES
-#endif
     case LlvmCostFunction::TEXT_SIZE_BYTES: {
       int64_t size;
-      RETURN_IF_ERROR(getTextSizeInBytes(module, &size, {SYSTEM_LIBRARIES}, workingDirectory));
+      RETURN_IF_ERROR(getTextSizeInBytes(module, &size, workingDirectory, dynamicConfig, /*compile_only=*/false));
       *cost = static_cast<double>(size);
       break;
     }
-#endif
     default:
       UNREACHABLE(fmt::format("Unhandled cost function: {}", costFunction));
   }
