@@ -5,6 +5,12 @@
 # that are then used to compile the LLVM compiler service.
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 
+cc_library(
+    name = "13.0.1",
+    hdrs = glob(["13.0.1/*.h"]),
+    visibility = ["//compiler_gym/envs/llvm:__subpackages__"],
+)
+
 genrule(
     name = "passes_list",
     srcs = [

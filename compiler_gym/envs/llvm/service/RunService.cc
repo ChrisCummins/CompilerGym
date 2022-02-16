@@ -20,7 +20,9 @@ void initLlvm() {
 
   // Initialize passes.
   llvm::PassRegistry& Registry = *llvm::PassRegistry::getPassRegistry();
-#if 0  // TODO(cummins): Replacing LLVM 10's init with LLVM 13's.
+  // TODO(github.com/facebookresearch/CompilerGym/issues/573): Replacing LLVM 10's init with LLVM
+  // 13's.
+#if 1
   llvm::initializeCore(Registry);
   llvm::initializeCoroutines(Registry);
   llvm::initializeScalarOpts(Registry);

@@ -79,6 +79,7 @@ cc_library(
         "//compiler_gym/envs/llvm/service/passes:ActionEnum.h",
     ],
     deps = [
+        "//compiler_gym/envs/llvm/service/passes:13.0.1",
         "//compiler_gym/service/proto:compiler_gym_service_cc",
         "//compiler_gym/util:EnumUtil",
         "//compiler_gym/util:Unreachable",
