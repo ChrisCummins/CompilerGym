@@ -380,7 +380,7 @@ install: |  init-runtime-requirements bazel-build pip-install
 experimental-unstable-cmake-install:
 	rm -f build/py_pkg/dist/compiler_gym-*.whl
 	cmake --build build
-	pip install --force-reinstall build/py_pkg/dist/compiler_gym-*.whl
+	pip install --force-reinstall --no-dependencies build/py_pkg/dist/compiler_gym-*.whl
 
 .PHONY: experimental-unstable-cmake-install
 
