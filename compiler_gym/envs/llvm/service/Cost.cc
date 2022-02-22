@@ -206,6 +206,9 @@ Status getTextSizeInBytes(llvm::Module& module, int64_t* value, const fs::path& 
                                 "Command returned exit code {}: {}. Error: {}",
                                 clang.exit_code(), clangCmd, stderr));
     }
+  } catch (std::exception const& e) {
+    return Status(StatusCode::INTERNAL, "Failed to lower IR");
+  }
 
   Status status = getTextSizeInBytes(tmpFile, value);
   fs::remove(tmpFile);
