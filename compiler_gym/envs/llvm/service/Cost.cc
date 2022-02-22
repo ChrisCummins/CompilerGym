@@ -64,8 +64,6 @@ Status getTextSizeInBytes(const fs::path& file, int64_t* value) {
   std::string llvmSizeOutput;
 
   try {
-    // Run llvm-size on the compiled file.
-    const std::string llvmSizeCmd = fmt::format("{} {}", llvmSizePath.string(), file.string());
 
     boost::asio::io_context llvmSizeStdoutStream;
     std::future<std::string> llvmSizeStdoutFuture;
@@ -86,6 +84,7 @@ Status getTextSizeInBytes(const fs::path& file, int64_t* value) {
                                                               "Command returned exit code {}: {}",
                                                               llvmSize.exit_code(), llvmSizeCmd));
     }
+
   } catch (bp::process_error& e) {
     return Status(StatusCode::INVALID_ARGUMENT,
                   fmt::format("Failed to compute .text size cost: {}", e.what()));
@@ -116,51 +115,86 @@ Status getTextSizeInBytes(const fs::path& file, int64_t* value) {
   return Status::OK;
 }
 
+#define TEXT_SIZE_RETURN_IF_ERROR(expr)                                                            \
+  while (1) {                                                                                      \
+    const auto status = expr;                                                                      \
+    if (!status.ok()) {                                                                            \
+      return Status(StatusCode::INVALID_ARGUMENT,                                                  \
+                    fmt::format("Failed to compute .text size cost: {}", status.error_message())); \
+    }                                                                                              \
+    break;                                                                                         \
+  }
+
 Status getTextSizeInBytes(llvm::Module& module, int64_t* value, const fs::path& workingDirectory,
                           const util::LocalShellCommand& buildCommand) {
   if (buildCommand.outfiles().size() != 1) {
-      return Status(StatusCode::INVALID_ARGUMENT,
-                    fmt::format("Expected a single output from build job, actual: {}. Command: {}",
-                                buildCommand.outfiles().size(), buildCommand.commandline()));
+    return Status(StatusCode::INVALID_ARGUMENT,
+                  fmt::format("Expected a single output from build job, actual: {}. Command: {}",
+                              buildCommand.outfiles().size(), buildCommand.commandline()));
   }
   const auto& outfile = buildCommand.outfiles()[0];
 
   // Write the bitcode to the expected place.
   RETURN_IF_ERROR(writeBitcodeFile(module, "out.bc"));
 
-  RETURN_IF_ERROR(buildCommand.checkInfiles());
-  RETURN_IF_ERROR(buildCommand.checkCall());
-  RETURN_IF_ERROR(buildCommand.checkOutfiles());
+  TEXT_SIZE_RETURN_IF_ERROR(buildCommand.checkInfiles());
+  TEXT_SIZE_RETURN_IF_ERROR(buildCommand.checkCall());
+  TEXT_SIZE_RETURN_IF_ERROR(buildCommand.checkOutfiles());
 
   return getTextSizeInBytes(outfile, value);
 }
 
-util::LocalShellCommand getBuildCommand(const BenchmarkDynamicConfig& dynamicConfig, bool compile_only) {
+#undef TEXT_SIZE_RETURN_IF_ERROR
+
+util::LocalShellCommand getBuildCommand(const BenchmarkDynamicConfig& dynamicConfig,
+                                        bool compile_only) {
   // Append the '-c' flag to compile-only jobs.
   if (compile_only) {
     Command newCommand;
     newCommand.CopyFrom(dynamicConfig.buildCommand().proto());
+
+    // Determine if the compilation specifies an output file using the `-o
+    // <file>` flag. If not, then add one so that when we append the `-c` flag
+    // we still know where the generated object file will go.
+    bool outfileSpecified = false;
+    for (int i = 0; i < newCommand.argument_size() - 1; ++i) {
+      if (newCommand.argument(i) == "-o") {
+        outfileSpecified = true;
+        break;
+      }
+    }
+    if (!outfileSpecified) {
+      newCommand.add_argument("-o");
+      if (newCommand.outfile_size() < 1) {
+        newCommand.add_argument("a.out");
+        newCommand.add_outfile("a.out");
+      } else {
+        const auto& outfile = newCommand.outfile(0);
+        newCommand.add_argument(outfile);
+      }
+    }
+
     newCommand.add_argument("-c");
+
     return util::LocalShellCommand(newCommand);
   }
   return dynamicConfig.buildCommand();
 }
 
 Status getTextSizeInBytes(llvm::Module& module, int64_t* value, const fs::path& workingDirectory,
-                          const BenchmarkDynamicConfig& dynamicConfig, bool compile_only=true) {
+                          const BenchmarkDynamicConfig& dynamicConfig, bool compile_only = true) {
   if (dynamicConfig.isBuildable()) {
     if (chdir(dynamicConfig.scratchDirectory().string().c_str())) {
-      return Status(StatusCode::INTERNAL,
-                    fmt::format("Failed to set working directory: {}", dynamicConfig.scratchDirectory().string()));
+      return Status(StatusCode::INTERNAL, fmt::format("Failed to set working directory: {}",
+                                                      dynamicConfig.scratchDirectory().string()));
     }
 
     const util::LocalShellCommand buildCommand = getBuildCommand(dynamicConfig, compile_only);
     return getTextSizeInBytes(module, value, workingDirectory, buildCommand);
   }
 
-  // TODO(cummins): Remove this legacy implementation by providing a default
-  // buildCommand for the dynamicConfig.
-  DCHECK(compile_only) << "Legacy getTextSizeInBytes() implementation only supports compile_only=true";
+  // TODO(cummins): We only provide an implementation for the compile_only path
+  // here.
 
   const auto clangPath = util::getSiteDataPath("llvm-v0/bin/clang");
   const auto llvmSizePath = util::getSiteDataPath("llvm-v0/bin/llvm-size");
@@ -177,9 +211,9 @@ Status getTextSizeInBytes(llvm::Module& module, int64_t* value, const fs::path& 
     const std::string clangCmd =
         fmt::format("{} -w -xir - -o {} -c", clangPath.string(), tmpFile.string());
 
-    boost::asio::io_context clangContext;
+    boost::asio::io_service clangService;
     auto stdinBuffer{boost::asio::buffer(ir)};
-    bp::async_pipe stdinPipe(clangContext);
+    bp::async_pipe stdinPipe(clangService);
     boost::asio::io_context clangStderrStream;
     std::future<std::string> clangStderrFuture;
 
@@ -191,8 +225,8 @@ Status getTextSizeInBytes(llvm::Module& module, int64_t* value, const fs::path& 
         stdinPipe, stdinBuffer,
         [&](const boost::system::error_code& ec, std::size_t n) { stdinPipe.async_close(); });
 
-    clangContext.run_for(std::chrono::seconds(60));
-    if (clangContext.poll()) {
+    clangService.run_for(std::chrono::seconds(60));
+    if (clangService.poll()) {
       return Status(StatusCode::INVALID_ARGUMENT,
                     "Failed to compute .text size cost within 60 seconds");
     }
@@ -206,8 +240,9 @@ Status getTextSizeInBytes(llvm::Module& module, int64_t* value, const fs::path& 
                                 "Command returned exit code {}: {}. Error: {}",
                                 clang.exit_code(), clangCmd, stderr));
     }
-  } catch (std::exception const& e) {
-    return Status(StatusCode::INTERNAL, "Failed to lower IR");
+  } catch (bp::process_error& e) {
+    return Status(StatusCode::INVALID_ARGUMENT,
+                  fmt::format("Failed to compute .text size cost: {}", e.what()));
   }
 
   Status status = getTextSizeInBytes(tmpFile, value);
@@ -266,13 +301,15 @@ Status setCost(const LlvmCostFunction& costFunction, llvm::Module& module,
     }
     case LlvmCostFunction::OBJECT_TEXT_SIZE_BYTES: {
       int64_t size;
-      RETURN_IF_ERROR(getTextSizeInBytes(module, &size, workingDirectory, dynamicConfig, /*compile_only=*/true));
+      RETURN_IF_ERROR(getTextSizeInBytes(module, &size, workingDirectory, dynamicConfig,
+                                         /*compile_only=*/true));
       *cost = static_cast<double>(size);
       break;
     }
     case LlvmCostFunction::TEXT_SIZE_BYTES: {
       int64_t size;
-      RETURN_IF_ERROR(getTextSizeInBytes(module, &size, workingDirectory, dynamicConfig, /*compile_only=*/false));
+      RETURN_IF_ERROR(getTextSizeInBytes(module, &size, workingDirectory, dynamicConfig,
+                                         /*compile_only=*/false));
       *cost = static_cast<double>(size);
       break;
     }
