@@ -98,8 +98,8 @@ Darwin is not supported with CMake.
 ### Dependency instructions for Ubuntu
 
 ```bash
-sudo apt-get install g++ lld-9 \
-  autoconf libtool ninja-build ccache git \
+sudo apt-get install g++ lld-9 autoconf libtool git
+conda install -y -c conda-forge ccache ninja
 ```
 
 Requires CMake (>=3.20).
