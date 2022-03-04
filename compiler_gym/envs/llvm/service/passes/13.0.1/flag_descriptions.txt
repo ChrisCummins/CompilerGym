@@ -7,7 +7,6 @@ Annotation2Metadata
 Annotation Remarks
 Promote 'by reference' arguments to scalars
 Assume Simplify
-Deduce and propagate attributes (CGSCC pass)
 Deduce and propagate attributes
 A No-Op Barrier Pass
 Bit-Tracking Dead Code Elimination

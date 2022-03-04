@@ -91,7 +91,6 @@ AssumeBuilderPassLegacyPass,-assume-builder,Assume Builder,lib/Transforms/Utils/
 AssumeSimplifyPass,-assume-simplify,Assume Simplify,lib/Transforms/Utils/AssumeBundleBuilder.cpp,,False,False
 AssumptionCacheTracker,-assumption-cache-tracker,Assumption Cache Tracker,lib/Analysis/AssumptionCache.cpp,,False,True
 AtomicExpand,-atomic-expand,Expand Atomic instructions,lib/CodeGen/AtomicExpandPass.cpp,,False,False
-AttributorCGSCCLegacyPass,-attributor-cgscc,Deduce and propagate attributes (CGSCC pass),lib/Transforms/IPO/Attributor.cpp,,False,False
 AttributorLegacyPass,-attributor,Deduce and propagate attributes,lib/Transforms/IPO/Attributor.cpp,,False,False
 BPFAbstractMemberAccessLegacyPass,-bpf-abstract-member-access,BPF Abstract Member Access,lib/Target/BPF/BPFAbstractMemberAccess.cpp,,False,False
 BPFAdjustOpt,-bpf-adjust-opt,BPF Adjust Optimization,lib/Target/BPF/BPFAdjustOpt.cpp,,False,False

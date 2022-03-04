@@ -27,9 +27,6 @@
     case LlvmAction::ASSUME_SIMPLIFY:                                \
       handlePass(llvm::createAssumeSimplifyPass());                  \
       break;                                                         \
-    case LlvmAction::ATTRIBUTOR_CGSCC:                               \
-      handlePass(llvm::createAttributorCGSCCLegacyPass());           \
-      break;                                                         \
     case LlvmAction::ATTRIBUTOR:                                     \
       handlePass(llvm::createAttributorLegacyPass());                \
       break;                                                         \

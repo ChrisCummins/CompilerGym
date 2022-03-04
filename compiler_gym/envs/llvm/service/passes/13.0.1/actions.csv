@@ -8,7 +8,6 @@ Annotation2MetadataLegacyPass,-annotation2metadata,Annotation2Metadata,lib/Trans
 AnnotationRemarksLegacyPass,-annotation-remarks,Annotation Remarks,lib/Transforms/Scalar/AnnotationRemarks.cpp,,False,False
 ArgumentPromotionPass,-argpromotion,Promote 'by reference' arguments to scalars,lib/Transforms/IPO/ArgumentPromotion.cpp,,False,False
 AssumeSimplifyPass,-assume-simplify,Assume Simplify,lib/Transforms/Utils/AssumeBundleBuilder.cpp,,False,False
-AttributorCGSCCLegacyPass,-attributor-cgscc,Deduce and propagate attributes (CGSCC pass),lib/Transforms/IPO/Attributor.cpp,,False,False
 AttributorLegacyPass,-attributor,Deduce and propagate attributes,lib/Transforms/IPO/Attributor.cpp,,False,False
 BarrierNoopPass,-barrier,A No-Op Barrier Pass,lib/Transforms/IPO/BarrierNoopPass.cpp,,False,False
 BitTrackingDCEPass,-bdce,Bit-Tracking Dead Code Elimination,lib/Transforms/Scalar/BDCE.cpp,,False,False

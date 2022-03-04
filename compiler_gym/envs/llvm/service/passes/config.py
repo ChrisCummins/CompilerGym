@@ -267,6 +267,8 @@ _EXCLUDED_PASSES = {
     "RegToMemLegacy",
     "SimpleLoopUnswitchLegacyPass",
     "StripGCRelocatesLegacy",
+    # TODO(cummins): This pass hangs on LLVM 13.0.1:
+    "AttributorCGSCCLegacyPass",
 }
 
 # The name of the LLVM target to extract architecture-specific transforms for.
