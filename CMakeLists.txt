@@ -20,6 +20,9 @@ project(compiler_gym ASM C CXX)
 set(CMAKE_C_STANDARD 11 CACHE STRING "C standard to be used.")
 set(CMAKE_CXX_STANDARD 17 CACHE STRING "C++ standard to be used.")
 
+set(CMAKE_C_COMPILER_LAUNCHER "ccache")
+set(CMAKE_CXX_COMPILER_LAUNCHER "ccache")
+
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 list(APPEND CMAKE_MODULE_PATH
