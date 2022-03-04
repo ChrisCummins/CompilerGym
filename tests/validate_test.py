@@ -10,6 +10,9 @@ from compiler_gym import CompilerEnvState, validate_states
 from tests.test_main import main
 
 
+@pytest.mark.xfail(
+    reason="github.com/facebookresearch/CompilerGym/issues/568", strict=True
+)
 @pytest.mark.parametrize("inorder", (False, True))
 @pytest.mark.parametrize("nproc", (1, 2))
 def test_validate_states_lambda_callback(inorder, nproc):

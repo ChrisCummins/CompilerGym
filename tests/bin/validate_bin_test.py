@@ -16,6 +16,9 @@ from tests.pytest_plugins.common import set_command_line_flags, skip_on_ci
 from tests.test_main import main as _test_main
 
 
+@pytest.mark.xfail(
+    reason="github.com/facebookresearch/CompilerGym/issues/568", strict=True
+)
 def test_okay_llvm_result(monkeypatch):
     stdin = """
 benchmark,reward,commandline,walltime
@@ -31,6 +34,9 @@ benchmark://cbench-v1/crc32,0,opt  input.bc -o output.bc,0.3
     assert not out.stderr
 
 
+@pytest.mark.xfail(
+    reason="github.com/facebookresearch/CompilerGym/issues/568", strict=True
+)
 def test_okay_llvm_result_file_input():
     with tempfile.TemporaryDirectory() as d:
         path = Path(d) / "test.csv"
@@ -61,6 +67,9 @@ def test_no_input(monkeypatch):
     assert "No inputs to validate" in out.stderr
 
 
+@pytest.mark.xfail(
+    reason="github.com/facebookresearch/CompilerGym/issues/568", strict=True
+)
 def test_invalid_reward_llvm_result(monkeypatch):
     stdin = """
 benchmark,reward,commandline,walltime
@@ -91,6 +100,9 @@ def test_invalid_csv_format(monkeypatch):
     assert "Expected 4 columns in the first row of CSV" in out.stderr
 
 
+@pytest.mark.xfail(
+    reason="github.com/facebookresearch/CompilerGym/issues/568", strict=True
+)
 @skip_on_ci
 def test_multiple_valid_inputs(monkeypatch):
     stdin = """
@@ -109,6 +121,9 @@ benchmark://cbench-v1/crc32,,0,opt  input.bc -o output.bc
     assert out.stdout.count("✅") == 3  # Every benchmark passed.
 
 
+@pytest.mark.xfail(
+    reason="github.com/facebookresearch/CompilerGym/issues/568", strict=True
+)
 @skip_on_ci
 @pytest.mark.parametrize(
     "benchmarks",
