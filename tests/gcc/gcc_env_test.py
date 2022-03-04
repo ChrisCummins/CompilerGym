@@ -20,6 +20,11 @@ from tests.test_main import main
 pytest_plugins = ["tests.pytest_plugins.gcc"]
 
 
+pytest.skip(
+    "TODO(github.com/facebookresearch/CompilerGym/issues/568)", allow_module_level=True
+)
+
+
 @without_docker
 def test_gcc_env_fails_without_gcc_support():
     with pytest.raises(ServiceError):

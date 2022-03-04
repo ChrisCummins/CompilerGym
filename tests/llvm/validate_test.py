@@ -15,6 +15,10 @@ from tests.test_main import main
 
 pytest_plugins = ["tests.pytest_plugins.llvm"]
 
+pytest.skip(
+    "TODO(github.com/facebookresearch/CompilerGym/issues/568)", allow_module_level=True
+)
+
 
 def test_validate_state_no_reward():
     state = CompilerEnvState(

@@ -11,6 +11,10 @@ from compiler_gym.service import ServiceError
 from tests.pytest_plugins.gcc import with_system_gcc, without_system_gcc
 from tests.test_main import main
 
+pytest.skip(
+    "TODO(github.com/facebookresearch/CompilerGym/issues/568)", allow_module_level=True
+)
+
 
 def test_missing_gcc_bin():
     with pytest.raises(ServiceError):

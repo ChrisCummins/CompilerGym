@@ -11,6 +11,10 @@ from compiler_gym.service import ServiceError
 from tests.pytest_plugins.common import skip_on_ci, with_docker
 from tests.test_main import main
 
+pytest.skip(
+    "TODO(github.com/facebookresearch/CompilerGym/issues/568)", allow_module_level=True
+)
+
 
 @with_docker
 def test_invalid_docker_image():
