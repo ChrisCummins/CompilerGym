@@ -22,7 +22,8 @@ void initLlvm() {
   llvm::PassRegistry& Registry = *llvm::PassRegistry::getPassRegistry();
   // TODO(github.com/facebookresearch/CompilerGym/issues/573): Replacing LLVM 10's init with LLVM
   // 13's.
-#if 1
+
+#if LLVM_VERSION_MAJOR == 10
   llvm::initializeCore(Registry);
   llvm::initializeCoroutines(Registry);
   llvm::initializeScalarOpts(Registry);
@@ -54,7 +55,7 @@ void initLlvm() {
   llvm::initializeExpandReductionsPass(Registry);
   llvm::initializeWasmEHPreparePass(Registry);
   llvm::initializeWriteBitcodePassPass(Registry);
-#else
+#elif LLVM_VERSION_MAJOR == 13
   initializeCore(Registry);
   initializeCoroutines(Registry);
   initializeScalarOpts(Registry);
@@ -93,6 +94,8 @@ void initLlvm() {
   initializeHardwareLoopsPass(Registry);
   initializeTypePromotionPass(Registry);
   initializeReplaceWithVeclibLegacyPass(Registry);
+#else
+#error "Unknown LLVM version: " LLVM_VERSION_MAJOR
 #endif
 }
 

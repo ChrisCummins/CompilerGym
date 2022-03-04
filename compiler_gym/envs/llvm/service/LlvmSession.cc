@@ -22,8 +22,17 @@
 #include "compiler_gym/envs/llvm/service/Cost.h"
 #include "compiler_gym/envs/llvm/service/Observation.h"
 #include "compiler_gym/envs/llvm/service/ObservationSpaces.h"
+
+#if LLVM_VERSION_MAJOR == 10
 #include "compiler_gym/envs/llvm/service/passes/ActionHeaders.h"
 #include "compiler_gym/envs/llvm/service/passes/ActionSwitch.h"
+#elif LLVM_VERSION_MAJOR == 13
+#include "compiler_gym/envs/llvm/service/passes/13.0.1/ActionHeaders.h"
+#include "compiler_gym/envs/llvm/service/passes/13.0.1/ActionSwitch.h"
+#else
+#error "Unknown LLVM version: " LLVM_VERSION_MAJOR
+#endif
+
 #include "compiler_gym/third_party/autophase/InstCount.h"
 #include "compiler_gym/third_party/llvm/InstCount.h"
 #include "compiler_gym/util/EnumUtil.h"

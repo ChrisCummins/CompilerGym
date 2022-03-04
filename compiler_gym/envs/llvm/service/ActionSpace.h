@@ -10,7 +10,7 @@ namespace compiler_gym::llvm_service {
 
 // TODO(github.com/facebookresearch/CompilerGym/issues/568):
 #ifndef LLVM_VERSION_MAJOR
-#define LLVM_VERSION_MAJOR 10
+#define LLVM_VERSION_MAJOR 13
 #endif
 
 #if LLVM_VERSION_MAJOR == 10
