@@ -15,11 +15,11 @@ cg_cc_binary(
     "-DGOOGLE_PROTOBUF_NO_RTTI"
     "-fno-rtti"
   DEPS
-    nlohmann_json::nlohmann_json
     ProGraML::graph::format::node_link_graph
     ProGraML::ir::llvm::llvm-10
     ProGraML::proto::programl_cc
   ABS_DEPS
+    nlohmann_json::nlohmann_json
     glog::glog
     ${_LLVM_LIBS}
   INCLUDES
