@@ -57,7 +57,6 @@ _CREATE_PASS_NAME_MAP: Dict[str, str] = {
     "CanonicalizeAliasesLegacyPass": "CanonicalizeAliasesPass",
     "CanonicalizeFreezeInLoops": "CanonicalizeFreezeInLoopsPass",
     "CFGSimplifyPass": "CFGSimplificationPass",
-    "CFGuard": ["CFGuardCheckPass", "CFGuardDispatchPass"],
     "ConstantHoistingLegacyPass": "ConstantHoistingPass",
     "ConstantMergeLegacyPass": "ConstantMergePass",
     "ConstantPropagation": "ConstantPropagationPass",
@@ -275,6 +274,7 @@ _EXCLUDED_PASSES: Set[str] = {
     "RewriteSymbolsPass",
     # Microsoft's Control Flow Guard checks on Windows targets.
     # https://llvm.org/doxygen/CFGuard_8cpp.html
+    "CFGuard",
     "CFGuardCheckPass",
     "CFGuardDispatchPass",
     # We don't want to change the visibility of symbols.
