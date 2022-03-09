@@ -3,20 +3,32 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 """Configuration for building an action space from a list of LLVM passes."""
+from typing import Dict, Set
+
 from llvm_pass import Pass
 
 # A set of headers that must be included to use the generated pass list.
-LLVM_ACTION_INCLUDES = {
+LLVM_ACTION_INCLUDES: Set[str] = {
     "llvm/LinkAllPasses.h",
     # A handle of coroutine utility passes are not pulled in by the
     # LinkAllPasses.h header.
     "llvm/Transforms/Coroutines.h",
 }
 
+
+def pass_name_to_create_statement(name: str):
+    """Translate the name of class that defines a pass into a C++ snippet to
+    construct a pointer to an instance of this pass. E.g. given input
+    "AddDiscriminatorsPass", return "createAddDiscriminatorsPass()".
+    """
+    create_name = _CREATE_PASS_NAME_MAP.get(name, name)
+    return f"create{create_name}()"
+
+
 # A mapping from the name of a pass as defined in a INITIALIZE_PASS(name, ...)
 # macro invocation to the name of the pass as defined in the createPASS();
 # factory function. Not all passes are named consistently.
-CREATE_PASS_NAME_MAP = {
+_CREATE_PASS_NAME_MAP: Dict[str, str] = {
     "ADCELegacyPass": "AggressiveDCEPass",
     "AddDiscriminatorsLegacyPass": "AddDiscriminatorsPass",
     "AggressiveInstCombinerLegacyPass": "AggressiveInstCombinerPass",
@@ -183,8 +195,17 @@ CREATE_PASS_NAME_MAP = {
     "VectorCombineLegacyPass": "VectorCombinePass",
 }
 
+
+def include_pass(pass_: Pass) -> bool:
+    """Determine whether the pass should be included in the generated C++ sources."""
+    if pass_.name in _EXCLUDED_PASSES:
+        return False
+
+    return "lib/Transforms" in pass_.source or f"Targets/{_TARGET}" in pass_.source
+
+
 # A list of pass names that should be excluded from the action space.
-_EXCLUDED_PASSES = {
+_EXCLUDED_PASSES: Set[str] = {
     # Irrelevant garbage collection passes.
     "StripGCRelocates",
     "PlaceBackedgeSafepointsImpl",
@@ -273,11 +294,3 @@ _EXCLUDED_PASSES = {
 
 # The name of the LLVM target to extract architecture-specific transforms for.
 _TARGET = "X86"
-
-
-def include_pass(pass_: Pass) -> bool:
-    """Determine whether the pass should be included in the generated C++ sources."""
-    if pass_.name in _EXCLUDED_PASSES:
-        return False
-
-    return "lib/Transforms" in pass_.source or f"Targets/{_TARGET}" in pass_.source

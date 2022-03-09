@@ -36,7 +36,7 @@ from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Tuple
 
 from absl import app, flags
-from config import CREATE_PASS_NAME_MAP
+from config import pass_name_to_create_statement
 from llvm_pass import Pass
 
 flags.DEFINE_string("llvm_src_root", "", "Path to the LLVM source tree.")
@@ -168,25 +168,16 @@ def parse_initialize_pass(
     cfg = cfg == "true"
     analysis = analysis == "true"
 
-    opts = {
-        "source": source_path,
-        "header": header,
-        "name": pass_name,
-        "flag": f"-{arg}",
-        "description": name,
-        "cfg": cfg,
-        "is_analysis": analysis,
-    }
-
-    pass_name_or_list = CREATE_PASS_NAME_MAP.get(pass_name, pass_name)
-
-    if isinstance(pass_name_or_list, str):
-        opts["name"] = pass_name_or_list
-        yield Pass(**opts)
-    else:
-        for name in pass_name_or_list:
-            opts["name"] = name
-            yield Pass(**opts)
+    yield Pass(
+        source=source_path,
+        header=header,
+        class_name=pass_name,
+        create_statement=pass_name_to_create_statement(pass_name),
+        flag=f"-{arg}",
+        description=name,
+        cfg=cfg,
+        is_analysis=analysis,
+    )
 
 
 def build_defines(source: str) -> Dict[str, str]:
@@ -194,8 +185,8 @@ def build_defines(source: str) -> Dict[str, str]:
     and string literals to their values."""
     defines = {}
     lines = source.split("\n")
-    for i in range(len(lines)):
-        line = lines[i].strip()
+    for i, line in enumerate(lines):
+        line = line.strip()
         if line.startswith("#define"):
             # Match #define strings.
             components = line[len("#define ") :].split()
