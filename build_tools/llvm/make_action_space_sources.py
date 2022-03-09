@@ -75,9 +75,13 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Iterable
 
-from absl import app, logging
-from config import LLVM_ACTION_INCLUDES
+from absl import app, flags, logging
 from llvm_pass import Pass
+from load_config import load_config
+
+flags.DEFINE_string("outdir", "genfiles", "Output directory")
+
+FLAGS = flags.FLAGS
 
 header = """\
 Copyright (c) Facebook, Inc. and its affiliates.
@@ -125,14 +129,14 @@ def write(path: Path):
     logging.info("Wrote %s", path)
 
 
-def make_action_sources(passes: Iterable[Pass], outpath: Path):
+def make_action_sources(config, passes: Iterable[Pass], outdir: Path):
     """Generate the enum and switch content."""
-    headers = set(LLVM_ACTION_INCLUDES)
+    headers = set(config.LLVM_ACTION_INCLUDES)
 
     passes = sorted(list(passes), key=lambda p: p.class_name)
 
-    with write(outpath / "ActionSwitch.h") as switch_f, write(
-        outpath / "ActionEnum.h"
+    with write(outdir / "ActionSwitch.h") as switch_f, write(
+        outdir / "ActionEnum.h"
     ) as enum_f:
         print(file=switch_f)
         print(file=enum_f)
@@ -144,13 +148,13 @@ def make_action_sources(passes: Iterable[Pass], outpath: Path):
         print("};", file=enum_f)
         print("  }", file=switch_f)
 
-    with write(outpath / "ActionHeader.h") as f:
+    with write(outdir / "ActionHeader.h") as f:
         print(file=f)
         print("#pragma once\n", file=f)
         for header_ in sorted(headers):
             print(f'#include "{header_}"', file=f)
 
-    with write(outpath / "actions.py") as f:
+    with write(outdir / "actions.py") as f:
         print("from enum import Enum\n", file=f)
         print("class actions(Enum):", file=f)
         for pass_ in passes:
@@ -159,13 +163,13 @@ def make_action_sources(passes: Iterable[Pass], outpath: Path):
 
 def main(argv):
     """Main entry point."""
-    assert len(argv) == 2, "Requires a single argument"
+    assert len(argv) == 1, f"Unknown flags: {argv[1:]}"
 
-    outpath = Path(argv[1])
-    outpath.mkdir(exist_ok=True, parents=True)
+    outdir = Path(FLAGS.outdir)
+    outdir.mkdir(exist_ok=True, parents=True)
 
     passes = [Pass(**ln) for ln in json.load(sys.stdin)]
-    make_action_sources(passes, outpath)
+    make_action_sources(load_config(), passes, outdir)
 
 
 if __name__ == "__main__":

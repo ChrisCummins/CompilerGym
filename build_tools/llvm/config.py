@@ -5,8 +5,6 @@
 """Configuration for building an action space from a list of LLVM passes."""
 from typing import Dict, Set
 
-from llvm_pass import Pass
-
 # A set of headers that must be included to use the generated pass list.
 LLVM_ACTION_INCLUDES: Set[str] = {
     "llvm/LinkAllPasses.h",
@@ -206,12 +204,14 @@ _CREATE_PASS_NAME_MAP: Dict[str, str] = {
 }
 
 
-def include_pass(pass_: Pass) -> bool:
+def include_pass(pass_: Dict[str, str]) -> bool:
     """Determine whether the pass should be included in the generated C++ sources."""
-    if pass_.class_name in _EXCLUDED_PASSES:
+    if pass_["class_name"] in _EXCLUDED_PASSES:
         return False
 
-    return "lib/Transforms" in pass_.source or f"Targets/{_TARGET}" in pass_.source
+    return (
+        "lib/Transforms" in pass_["source"] or f"Targets/{_TARGET}" in pass_["source"]
+    )
 
 
 # A list of pass names that should be excluded from the action space.

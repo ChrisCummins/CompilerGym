@@ -35,8 +35,8 @@ from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Tuple
 
 from absl import app, flags, logging
-from config import pass_name_to_create_statement
 from llvm_pass import Pass
+from load_config import load_config
 
 flags.DEFINE_string("llvm_src_root", "", "Path to the LLVM source tree.")
 
@@ -58,7 +58,11 @@ class ParseError(ValueError):
 
 
 def parse_initialize_pass(
-    source_path: Path, header: Optional[str], input_source: str, defines: Dict[str, str]
+    config,
+    source_path: Path,
+    header: Optional[str],
+    input_source: str,
+    defines: Dict[str, str],
 ) -> Iterable[Pass]:
     """A shitty parser for INITIALIZE_PASS() macro invocations.."""
     # ****************************************************
@@ -169,7 +173,7 @@ def parse_initialize_pass(
         source=str(source_path),
         header=header,
         class_name=pass_name,
-        create_statement=pass_name_to_create_statement(pass_name),
+        create_statement=config.pass_name_to_create_statement(pass_name),
         flag=f"-{arg}",
         description=name.replace('" "', "").replace('"', "").strip(),
         cfg=cfg,
@@ -202,7 +206,7 @@ def build_defines(source: str) -> Dict[str, str]:
     return defines
 
 
-def handle_file(source_path: Path) -> Tuple[Path, List[Pass]]:
+def handle_file(config, source_path: Path) -> Tuple[Path, List[Pass]]:
     """Parse the passes declared in a file."""
     assert str(source_path).endswith(".cpp"), f"Unexpected file type: {source_path}"
 
@@ -233,7 +237,7 @@ def handle_file(source_path: Path) -> Tuple[Path, List[Pass]]:
         try:
             passes += list(
                 parse_initialize_pass(
-                    source_path, header, source[start : end + 1], defines
+                    config, source_path, header, source[start : end + 1], defines
                 )
             )
         except ParseError as e:
@@ -254,7 +258,7 @@ def handle_file(source_path: Path) -> Tuple[Path, List[Pass]]:
     return passes
 
 
-def extract_llvm_passes(root: Path):
+def extract_llvm_passes(config, root: Path):
     assert root.is_dir(), f"Not a directory: {root}"
     os.chdir(root)
 
@@ -278,19 +282,21 @@ def extract_llvm_passes(root: Path):
     # Build a list of pass entries.
     passes: List[Pass] = []
     for path in sorted(paths):
-        passes += handle_file(path)
+        passes += handle_file(config, path)
+
+    passes.sort()
 
     return passes
 
 
 def main(argv):
-    assert len(argv) > 1, "Missing argument"
+    assert len(argv) == 1, f"Unknown argument: {argv[1:]}"
 
-    passes = []
-    for arg in argv[1:]:
-        passes += extract_llvm_passes(Path(arg))
+    passes = extract_llvm_passes(load_config(), Path(FLAGS.llvm_src_root))
+    if not passes:
+        logging.error("No passes found in %s", FLAGS.llvm_src_root)
+        sys.exit(1)
 
-    passes = sorted(list(set(passes)))
     logging.info("Extracted %d LLVM passes", len(passes))
     print(json.dumps([p._asdict() for p in passes], indent=2))
 
