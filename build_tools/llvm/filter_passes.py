@@ -47,7 +47,7 @@ def filter_passes(pass_iterator: Iterable[Pass]) -> Iterable[Pass]:
 
 def main(argv):
     """Main entry point."""
-    del argv
+    assert len(argv) == 1, f"Unrecognized arguments: {argv[1:]}"
 
     passes = [Pass(**ln) for ln in json.load(sys.stdin)]
     filtered_passes = filter_passes(passes)

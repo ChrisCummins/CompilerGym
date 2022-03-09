@@ -21,8 +21,18 @@ def pass_name_to_create_statement(name: str):
     construct a pointer to an instance of this pass. E.g. given input
     "AddDiscriminatorsPass", return "createAddDiscriminatorsPass()".
     """
+    if name in _CREATE_STATEMENT_MAP:
+        return _CREATE_STATEMENT_MAP[name]
+
     create_name = _CREATE_PASS_NAME_MAP.get(name, name)
-    return f"create{create_name}()"
+    return f"llvm::create{create_name}()"
+
+
+# A mapping form the name of a pass as define in a INITIALIZE_PASS(name, ...)
+# macro invocation to a C++ snippet to create an instance of the pass.
+_CREATE_STATEMENT_MAP: Dict[str, str] = {
+    "EarlyCSEMemSSAPass": "llvm::createEarlyCSEPass(/*UseMemorySSA=*/true)",
+}
 
 
 # A mapping from the name of a pass as defined in a INITIALIZE_PASS(name, ...)

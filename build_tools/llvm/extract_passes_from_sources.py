@@ -171,7 +171,7 @@ def parse_initialize_pass(
         class_name=pass_name,
         create_statement=pass_name_to_create_statement(pass_name),
         flag=f"-{arg}",
-        description=name,
+        description=name.replace('" "', "").replace('"', "").strip(),
         cfg=cfg,
         is_analysis=analysis,
     )
@@ -280,15 +280,19 @@ def extract_llvm_passes(root: Path):
     for path in sorted(paths):
         passes += handle_file(path)
 
-    passes.sort()
-    logging.info("Extracted %d LLVM passes", len(passes))
-    print(json.dumps([p._asdict() for p in passes], indent=2))
+    return passes
 
 
 def main(argv):
     assert len(argv) > 1, "Missing argument"
+
+    passes = []
     for arg in argv[1:]:
-        extract_llvm_passes(Path(arg))
+        passes += extract_llvm_passes(Path(arg))
+
+    passes = sorted(list(set(passes)))
+    logging.info("Extracted %d LLVM passes", len(passes))
+    print(json.dumps([p._asdict() for p in passes], indent=2))
 
 
 if __name__ == "__main__":
