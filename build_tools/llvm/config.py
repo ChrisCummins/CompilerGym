@@ -23,6 +23,8 @@ def pass_name_to_create_statement(name: str):
         return _CREATE_STATEMENT_MAP[name]
 
     create_name = _CREATE_PASS_NAME_MAP.get(name, name)
+    if not create_name.endswith("Pass"):
+        create_name = f"{create_name}Pass"
     return f"llvm::create{create_name}()"
 
 
