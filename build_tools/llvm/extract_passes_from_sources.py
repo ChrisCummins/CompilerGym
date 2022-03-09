@@ -25,7 +25,7 @@ A more robust solution would be to parse the C++ sources and extract all classes
 which inherit from ModulePass etc.
 """
 import codecs
-import csv
+import json
 import logging
 import os
 import re
@@ -169,7 +169,7 @@ def parse_initialize_pass(
     analysis = analysis == "true"
 
     yield Pass(
-        source=source_path,
+        source=str(source_path),
         header=header,
         class_name=pass_name,
         create_statement=pass_name_to_create_statement(pass_name),
@@ -288,15 +288,12 @@ def main(argv):
         paths = [Path(path) for path in matching_paths]
 
     # Build a list of pass entries.
-    rows = []
+    passes: List[Pass] = []
     for path in sorted(paths):
-        passes = handle_file(path)
-        if passes:
-            rows += passes
+        passes += handle_file(path)
 
-    writer = csv.writer(sys.stdout, delimiter=",", quotechar='"')
-    writer.writerow(Pass._fields)
-    writer.writerows(sorted(rows, key=lambda r: r.name))
+    passes.sort()
+    print(json.dumps([p._asdict() for p in passes], indent=2))
 
 
 if __name__ == "__main__":
