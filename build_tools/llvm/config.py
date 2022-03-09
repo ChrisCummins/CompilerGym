@@ -198,7 +198,7 @@ _CREATE_PASS_NAME_MAP: Dict[str, str] = {
 
 def include_pass(pass_: Pass) -> bool:
     """Determine whether the pass should be included in the generated C++ sources."""
-    if pass_.name in _EXCLUDED_PASSES:
+    if pass_.class_name in _EXCLUDED_PASSES:
         return False
 
     return "lib/Transforms" in pass_.source or f"Targets/{_TARGET}" in pass_.source

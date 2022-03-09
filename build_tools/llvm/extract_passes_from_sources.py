@@ -26,7 +26,6 @@ which inherit from ModulePass etc.
 """
 import codecs
 import json
-import logging
 import os
 import re
 import shlex
@@ -35,15 +34,13 @@ import sys
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Tuple
 
-from absl import app, flags
+from absl import app, flags, logging
 from config import pass_name_to_create_statement
 from llvm_pass import Pass
 
 flags.DEFINE_string("llvm_src_root", "", "Path to the LLVM source tree.")
 
 FLAGS = flags.FLAGS
-
-logger = logging.getLogger(__name__)
 
 # A regular expression to match the start of an invocation of one of the
 # InitializePass helper macros.
@@ -248,44 +245,35 @@ def handle_file(source_path: Path) -> Tuple[Path, List[Pass]]:
             sys.exit(1)
 
     if passes:
-        logger.debug(
+        logging.debug(
             f"Extracted {len(passes)} {'passes' if len(passes) - 1 else 'pass'} from {source_path}",
         )
     else:
-        logger.debug(f"Found no passes in {source_path}")
+        logging.debug(f"Found no passes in {source_path}")
 
     return passes
 
 
-def main(argv):
-    argv = argv[1:]
-    assert not argv, f"Unknown arguments: {argv}"
-
-    assert FLAGS.llvm_src_root, "--llvm_src_root is required"
-
-    root = Path(FLAGS.llvm_src_root)
+def extract_llvm_passes(root: Path):
     assert root.is_dir(), f"Not a directory: {root}"
     os.chdir(root)
 
-    if len(argv) > 2:
-        paths = [Path(path) for path in argv[2:]]
-    else:
-        # Get the names of all files which contain a pass definition.
-        matching_paths = []
-        try:
-            grep = subprocess.check_output(
-                ["grep", "-l", "-E", rf"^\s*{INITIALIZE_PASS_RE}", "-R", "lib/"],
-                universal_newlines=True,
-            )
-        except subprocess.CalledProcessError:
-            print(
-                f"fatal: Failed to find any LLVM pass declarations in {root}",
-                file=sys.stderr,
-            )
-            sys.exit(1)
-        matching_paths += grep.strip().split("\n")
-        logger.debug("Processing %s files ...", len(matching_paths))
-        paths = [Path(path) for path in matching_paths]
+    # Get the names of all files which contain a pass definition.
+    matching_paths = []
+    try:
+        grep = subprocess.check_output(
+            ["grep", "-l", "-E", rf"^\s*{INITIALIZE_PASS_RE}", "-R", "lib/"],
+            universal_newlines=True,
+        )
+    except subprocess.CalledProcessError:
+        print(
+            f"fatal: Failed to find any LLVM pass declarations in {root}",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+    matching_paths += grep.strip().split("\n")
+    logging.info("Processing %s files from %s", len(matching_paths), root)
+    paths = [Path(path) for path in matching_paths]
 
     # Build a list of pass entries.
     passes: List[Pass] = []
@@ -293,7 +281,14 @@ def main(argv):
         passes += handle_file(path)
 
     passes.sort()
+    logging.info("Extracted %d LLVM passes", len(passes))
     print(json.dumps([p._asdict() for p in passes], indent=2))
+
+
+def main(argv):
+    assert len(argv) > 1, "Missing argument"
+    for arg in argv[1:]:
+        extract_llvm_passes(Path(arg))
 
 
 if __name__ == "__main__":
