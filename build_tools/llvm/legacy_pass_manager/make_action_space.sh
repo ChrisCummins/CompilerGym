@@ -12,8 +12,10 @@ main() {
 
     set -x
     mkdir -p "$outdir"
-    python "$CWD/extract_passes_from_sources.py" --llvm_root "$llvm_root" > "$outdir/passes.json"
+    python "$CWD/extract_passes_from_sources.py" --config "$config_py" --llvm_src_root "$llvm_root" > "$outdir/passes.json"
+    python "$CWD/filter_passes.py" --config "$config_py" < "$outdir/passes.json" > "$outdir/filtered_passes.json"
     python "$CWD/make_action_space_sources.py" \
+        --config "$config_py" \
         --outdir "$outdir" \
         < "$outdir/filtered_passes.json"
 }

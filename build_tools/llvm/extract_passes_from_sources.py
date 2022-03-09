@@ -2,289 +2,226 @@
 #
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
-"""Extract a list of passes form the LLVM source tree.
+"""Extract a list of passes from LLVM.
 
 Usage:
 
-    $ python extract_passes_from_llvm_source_tree.py /path/to/llvm-project/llvm
-
-Optionally accepts a list of specific files to examine:
-
-    $ python extract_passes_from_llvm_source_tree.py \
-        /path/to/llvm-project/llvm /path/to/llvm/source/file
-
-Implementation notes
---------------------
-
-This implements a not-very-good parser for the INITIALIZE_PASS() family of
-macros, which are used in the LLVM sources to declare a pass using it's name,
-flag, and docstring. Parsing known macros like this is fragile and likely to
-break as the LLVM sources evolve. Currently only tested on LLVM 10.0 and 13.0.1.
-
-A more robust solution would be to parse the C++ sources and extract all classes
-which inherit from ModulePass etc.
+    $ python extract_passes_from_llvm_source_tree.py /path/to/llvm/install/dir
 """
-import codecs
+import concurrent
 import json
 import os
-import re
 import shlex
 import subprocess
 import sys
+import tempfile
+from concurrent.futures import ThreadPoolExecutor
+from functools import lru_cache
+from multiprocessing import cpu_count
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Tuple
+from typing import Dict, Iterable, List
 
+import clang
+import clang.cindex as cl
 from absl import app, flags, logging
-from llvm_pass import Pass
-from load_config import load_config
+from clang.cindex import CursorKind
 
-flags.DEFINE_string("llvm_src_root", "", "Path to the LLVM source tree.")
+flags.DEFINE_string("llvm_root", "", "Path to the LLVM source tree.")
 
 FLAGS = flags.FLAGS
 
-# A regular expression to match the start of an invocation of one of the
-# InitializePass helper macros.
-INITIALIZE_PASS_RE = r"(INITIALIZE_PASS|INITIALIZE_PASS_BEGIN|INITIALIZE_PASS_WITH_OPTIONS|INITIALIZE_PASS_WITH_OPTIONS_BEGIN)\("
-# A regular expression to match static const string definitions.
-CONST_CHAR_RE = r'^\s*static\s+const\s+char(\s+(?P<name>[a-zA-Z_]+)\s*\[\s*\]|\s*\*\s*(?P<ptr_name>[a-zA-Z_]+))\s*=\s*(?P<value>".+")\s*;'
+
+def qualified_name(cursor: clang.cindex.Cursor) -> str:
+    """Return a fully-qualified name for a cursor."""
+    if cursor is None or cursor.kind == CursorKind.TRANSLATION_UNIT:
+        return ""
+    else:
+        prefix = qualified_name(cursor.semantic_parent)
+        if prefix != "":
+            return f"{prefix}::{cursor.spelling}"
+        return cursor.spelling
 
 
-class ParseError(ValueError):
-    def __init__(self, message: str, source: str, components: List[str]):
-        super().__init__(message)
-        self.message = message
-        self.source = source
-        self.components = components
+def get_llvm_structs_and_classes(translation_unit) -> Iterable[str]:
+    """Extract qualified names of all structs and classes in a translation unit."""
+    for c in translation_unit.cursor.walk_preorder():
+        try:
+            if (
+                c.kind == clang.cindex.CursorKind.CLASS_DECL
+                or c.kind == clang.cindex.CursorKind.STRUCT_DECL
+            ):
+                name = qualified_name(c.referenced)
+                if not name.startswith("llvm::"):
+                    continue
+                name = name[len("llvm::") :]
+                # Nested namespace, ignore it.
+                if ":" in name:
+                    continue
+                yield name
+        except ValueError:
+            logging.debug("Ignoring unknown cursor kind error")
 
 
-def parse_initialize_pass(
-    config,
-    source_path: Path,
-    header: Optional[str],
-    input_source: str,
-    defines: Dict[str, str],
-) -> Iterable[Pass]:
-    """A shitty parser for INITIALIZE_PASS() macro invocations.."""
-    # ****************************************************
-    #           __        _
-    #         _/  \    _(\(o
-    #        /     \  /  _  ^^^o
-    #       /   !   \/  ! '!!!v'
-    #      !  !  \ _' ( \____
-    #      ! . \ _!\   \===^\)
-    #       \ \_!  / __!
-    #        \!   /    \
-    #  (\_      _/   _\ )
-    #   \ ^^--^^ __-^ /(__
-    #    ^^----^^    "^--v'
-    #
-    #           HERE BE DRAGONS!
-    #
-    # TODO(cummins): Take this code out back and shoot it.
-    # ****************************************************
-
-    # Squish down to a single line.
-    source = re.sub(r"\n\s*", " ", input_source, re.MULTILINE)
-    # Contract multi-spaces to single space.
-    source = re.sub(r",", ", ", source)
-    source = re.sub(r"\s+", " ", source)
-    source = re.sub(r"\(\s+", "(", source)
-    source = re.sub(r"\)\s+", ")", source)
-
-    # Strip the INITIALIZE_PASS(...) macro.
-    match = re.match(rf"^\s*{INITIALIZE_PASS_RE}(?P<args>.+)\)", source)
-    if not match:
-        raise ParseError("Failed to match INITIALIZE_PASS regex", source, [])
-    source = match.group("args")
-
-    components = []
-    start = 0
-    in_quotes = False
-    in_comment = False
-    substr = ""
-    for i in range(len(source)):
-        if (
-            not in_comment
-            and source[i] == "/"
-            and i < len(source) - 1
-            and source[i + 1] == "*"
-        ):
-            in_comment = True
-            substr += source[start:i].strip()
-        if (
-            in_comment
-            and source[i] == "*"
-            and i < len(source) - 1
-            and source[i + 1] == "/"
-        ):
-            in_comment = False
-            start = i + 2
-        if source[i] == '"':
-            in_quotes = not in_quotes
-        if not in_quotes and source[i] == ",":
-            substr += source[start:i].strip()
-            components.append(substr)
-            substr = ""
-            start = i + 2
-    components.append(substr + source[start:].strip())
-    if len(components) != 5:
-        raise ParseError(
-            f"Expected 5 components, found {len(components)}", source, components
+@lru_cache
+def get_llvm_cxx_flags(llvm_root: Path) -> List[str]:
+    """Get the C++ flags needed to compile LLVM sources."""
+    return shlex.split(
+        subprocess.check_output(
+            [str(llvm_root / "bin" / "llvm-config"), "--cxxflags"],
+            universal_newlines=True,
         )
-
-    pass_name, arg, name, cfg, analysis = components
-    # Strip quotation marks in arg and name.
-    if not arg:
-        raise ParseError(f"Empty arg: `{arg}`", source, components)
-    if not name:
-        raise ParseError(f"Empty name: `{name}`", source, components)
-
-    # Dodgy code to combine adjacent strings with macro expansion. For example,
-    # 'DEBUG_TYPE "-foo"'.
-    arg_components = shlex.split(arg)
-    for i, _ in enumerate(arg_components):
-        while arg_components[i] in defines:
-            arg_components[i] = defines[arg_components[i]]
-    arg = " ".join(arg_components)
-    if arg[0] == '"' and arg[-1] == '"':
-        arg = arg[1:-1]
-
-    while name in defines:
-        name = defines[name]
-    if not (name[0] == '"' and name[-1] == '"'):
-        raise ParseError(f"Could not interpret name `{name}`", source, components)
-    name = name[1:-1]
-
-    # Convert cfg and analysis to bool.
-    if cfg not in {"true", "false"}:
-        raise ParseError(
-            f"Could not interpret bool cfg argument `{cfg}`", source, components
-        )
-    if analysis not in {"true", "false"}:
-        raise ParseError(
-            f"Could not interpret bool analysis argument `{analysis}`",
-            source,
-            components,
-        )
-    cfg = cfg == "true"
-    analysis = analysis == "true"
-
-    yield Pass(
-        source=str(source_path),
-        header=header,
-        class_name=pass_name,
-        create_statement=config.pass_name_to_create_statement(pass_name),
-        flag=f"-{arg}",
-        description=name.replace('" "', "").replace('"', "").strip(),
-        cfg=cfg,
-        is_analysis=analysis,
     )
 
 
-def build_defines(source: str) -> Dict[str, str]:
-    """A quick-and-dirty technique to build a translation table from #defines
-    and string literals to their values."""
-    defines = {}
-    lines = source.split("\n")
-    for i, line in enumerate(lines):
-        line = line.strip()
-        if line.startswith("#define"):
-            # Match #define strings.
-            components = line[len("#define ") :].split()
-            name = components[0]
-            value = " ".join(components[1:]).strip()
-            if value == "\\":
-                value = lines[i + 1].strip()
-            defines[name] = value
-        else:
-            # Match string literals.
-            match = re.match(CONST_CHAR_RE, line)
-            if match:
-                defines[match.group("name") or match.group("ptr_name")] = match.group(
-                    "value"
-                )
-    return defines
-
-
-def handle_file(config, source_path: Path) -> Tuple[Path, List[Pass]]:
-    """Parse the passes declared in a file."""
-    assert str(source_path).endswith(".cpp"), f"Unexpected file type: {source_path}"
-
-    header = Path("llvm/" + str(source_path)[len("lib") : -len("cpp")] + "h")
-    if not header.is_file():
-        header = ""
-
-    with codecs.open(source_path, "r", "utf-8") as f:
-        source = f.read()
-
-    defines = build_defines(source)
-
-    passes: List[Pass] = []
-
-    for match in re.finditer(INITIALIZE_PASS_RE, source):
-        start = match.start()
-        first_bracket = source.find("(", start)
-        bracket_depth = 1
-        end = first_bracket
-        for end in range(first_bracket + 1, len(source)):
-            if source[end] == "(":
-                bracket_depth += 1
-            elif source[end] == ")":
-                bracket_depth -= 1
-            if not bracket_depth:
-                break
-
-        try:
-            passes += list(
-                parse_initialize_pass(
-                    config, source_path, header, source[start : end + 1], defines
-                )
+def can_compile(
+    header: str, pass_: str, pass_manager: str, cxx_flags: List[str]
+) -> bool:
+    """Try and compile a test file using the given pass and pass manager."""
+    with tempfile.TemporaryDirectory(prefix="CompilerGym-") as tmpdir:
+        tmpdir = Path(tmpdir)
+        with open(tmpdir / "test.cc", "w", encoding="utf-8") as f:
+            f.write(
+                f"""\
+#include "{header}"
+void M() {{
+    llvm::{pass_manager} PM;
+    PM.addPass(llvm::{pass_}());
+}}
+"""
             )
-        except ParseError as e:
-            print(f"Parsing error: {e.message}", file=sys.stderr)
-            print(f"Parsed components: {e.components}", file=sys.stderr)
-            print(f"In line: {e.source}", file=sys.stderr)
-            print(f"In file: {source_path}", file=sys.stderr)
-            print("Fatal error. Aborting now.", file=sys.stderr)
-            sys.exit(1)
+        try:
+            subprocess.check_call(
+                [
+                    str(Path(FLAGS.llvm_root) / "bin" / "clang++"),
+                    "-c",
+                    str(tmpdir / "test.cc"),
+                    "-o",
+                    str(tmpdir / "test.o"),
+                ]
+                + cxx_flags,
+                timeout=60,
+                stderr=subprocess.DEVNULL,
+            )
+            return True
+        except (subprocess.CalledProcessError, subprocess.TimeoutExpired):
+            return False
 
-    if passes:
-        logging.debug(
-            f"Extracted {len(passes)} {'passes' if len(passes) - 1 else 'pass'} from {source_path}",
+
+def module_pass_test(header: Path, name: str, pass_manager, cxx_flags, header_relpath):
+    if can_compile(header, name, "ModulePassManager", cxx_flags):
+        logging.info("Found module pass %s in %s", name, header_relpath)
+        return {
+            "class_name": name,
+            "create_statement": f"llvm::{name}()",
+            "header": header_relpath,
+            "type": "ModulePass",
+        }
+
+
+def function_pass_test(
+    header: Path, name: str, pass_manager, cxx_flags, header_relpath
+):
+    if can_compile(header, name, "FunctionPassManager", cxx_flags):
+        logging.info("Found function pass %s in %s", name, header_relpath)
+        return {
+            "class_name": name,
+            "create_statement": f"llvm::{name}()",
+            "header": header_relpath,
+            "type": "FunctionPass",
+        }
+
+
+def extract_passes_from_file(
+    executor: ThreadPoolExecutor,
+    futures,
+    header: Path,
+) -> None:
+    """Extract passes from a file."""
+    cxx_flags = get_llvm_cxx_flags(Path(FLAGS.llvm_root))
+    idx = clang.cindex.Index.create()
+    tu = idx.parse(
+        str(header),
+        args=["-xc++", "-std=c++14"],
+        options=clang.cindex.TranslationUnit.PARSE_SKIP_FUNCTION_BODIES,
+    )
+
+    header_relpath = os.path.relpath(header, os.path.join(FLAGS.llvm_root, "include"))
+
+    for name in get_llvm_structs_and_classes(tu):
+        futures.append(
+            executor.submit(
+                module_pass_test,
+                header,
+                name,
+                "ModulePassManager",
+                cxx_flags,
+                header_relpath,
+            )
         )
-    else:
-        logging.debug(f"Found no passes in {source_path}")
+        futures.append(
+            executor.submit(
+                function_pass_test,
+                header,
+                name,
+                "FunctionPassManager",
+                cxx_flags,
+                header_relpath,
+            )
+        )
 
-    return passes
 
+def extract_all_passes(llvm_root: Path) -> List[Dict[str, str]]:
+    """Extract passes from the LLVM source tree."""
+    assert llvm_root.is_dir(), f"Not a directory: {llvm_root}"
+    os.chdir(llvm_root)
 
-def extract_llvm_passes(config, root: Path):
-    assert root.is_dir(), f"Not a directory: {root}"
-    os.chdir(root)
+    cl.Config.set_library_file(str(llvm_root / "lib" / "libclang.so"))
 
-    # Get the names of all files which contain a pass definition.
-    matching_paths = []
+    # Get the names of all files which contain a pass class definition.
     try:
-        grep = subprocess.check_output(
-            ["grep", "-l", "-E", rf"^\s*{INITIALIZE_PASS_RE}", "-R", "lib/"],
+        include_root = llvm_root / "include/llvm/Transforms"
+        find = subprocess.check_output(
+            [
+                "find",
+                str(include_root),
+                "-type",
+                "f",
+                "-name",
+                "*.h",
+            ],
             universal_newlines=True,
         )
     except subprocess.CalledProcessError:
-        print(
-            f"fatal: Failed to find any LLVM pass declarations in {root}",
-            file=sys.stderr,
+        logging.error(
+            "Failed to find any LLVM headers in %s",
+            llvm_root,
         )
         sys.exit(1)
-    matching_paths += grep.strip().split("\n")
-    logging.info("Processing %s files from %s", len(matching_paths), root)
+
+    matching_paths = set(find.strip().splitlines())
+
+    # Prune the instrumentation passes.
+    matching_paths = [p for p in matching_paths if "Instrumentation/" not in p]
+
+    logging.info(
+        "Processing %s files from %s/include/llvm/Transforms",
+        len(matching_paths),
+        llvm_root,
+    )
     paths = [Path(path) for path in matching_paths]
 
-    # Build a list of pass entries.
-    passes: List[Pass] = []
-    for path in sorted(paths):
-        passes += handle_file(config, path)
+    passes: List[Dict[str, str]] = []
+    futures = []
+    with ThreadPoolExecutor(max_workers=cpu_count()) as executor:
+        for path in paths:
+            extract_passes_from_file(executor, futures, path)
 
-    passes.sort()
+        for future in concurrent.futures.as_completed(futures):
+            pass_ = future.result()
+            if pass_ is not None:
+                passes.append(pass_)
+
+    passes.sort(key=lambda p: p["class_name"])
 
     return passes
 
@@ -292,13 +229,13 @@ def extract_llvm_passes(config, root: Path):
 def main(argv):
     assert len(argv) == 1, f"Unknown argument: {argv[1:]}"
 
-    passes = extract_llvm_passes(load_config(), Path(FLAGS.llvm_src_root))
+    passes = extract_all_passes(Path(FLAGS.llvm_root))
     if not passes:
-        logging.error("No passes found in %s", FLAGS.llvm_src_root)
+        logging.error("No passes found in %s", FLAGS.llvm_root)
         sys.exit(1)
 
-    logging.info("Extracted %d LLVM passes", len(passes))
-    print(json.dumps([p._asdict() for p in passes], indent=2))
+    logging.info("Extracted %d passes from LLVM", len(passes))
+    print(json.dumps(passes, indent=2))
 
 
 if __name__ == "__main__":
