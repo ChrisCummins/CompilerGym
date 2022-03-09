@@ -133,8 +133,6 @@ def make_action_sources(config, passes: Iterable[Pass], outdir: Path):
     """Generate the enum and switch content."""
     headers = set(config.LLVM_ACTION_INCLUDES)
 
-    passes = sorted(list(passes), key=lambda p: p.class_name)
-
     with write(outdir / "ActionSwitch.h") as switch_f, write(
         outdir / "ActionEnum.h"
     ) as enum_f:
