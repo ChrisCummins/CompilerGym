@@ -18,8 +18,9 @@ The following files are generated:
 ------------------------
     Example:
 
-        #pragma once #include "llvm/LinkAllPasses.h" #include
-        "llvm/Transforms/AggressiveInstCombine/AggressiveInstCombine.h" ...
+        #pragma once
+        #include "llvm/LinkAllPasses.h"
+        #include "llvm/Transforms/AggressiveInstCombine/AggressiveInstCombine.h" ...
 
     This file includes the set of LLVM headers that must be included to use the
     passes.
