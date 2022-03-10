@@ -30,7 +30,7 @@ cg_cc_library(
     ActionSpace
   HDRS
     "ActionSpace.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/passes/13.0.1/ActionEnum.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/passes/13.0.1/ActionEnums.h"
   SRCS
     "ActionSpace.cc"
   DEPS
@@ -189,11 +189,12 @@ cg_cc_library(
     "-DGOOGLE_PROTOBUF_NO_RTTI"
     "-fno-rtti"
   HDRS
-    "${CMAKE_CURRENT_SOURCE_DIR}/passes/13.0.1/ActionHeaders.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/passes/13.0.1/ActionSwitch.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/passes/13.0.1/ActionHeader.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/passes/13.0.1/ActionPassBuilder.h"
     "LlvmSession.h"
   SRCS
     "LlvmSession.cc"
+    "${CMAKE_CURRENT_SOURCE_DIR}/passes/13.0.1/ActionPassBuilder.cc"
   DEPS
     ::ActionSpace
     ::Benchmark

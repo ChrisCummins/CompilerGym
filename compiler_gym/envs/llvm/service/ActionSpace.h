@@ -14,7 +14,7 @@ using LlvmActionSpace = CompilerGymPass;
 #if LLVM_VERSION_MAJOR == 10
 #include "compiler_gym/envs/llvm/service/passes/ActionEnum.h"
 #elif LLVM_VERSION_MAJOR == 13
-#include "compiler_gym/envs/llvm/service/passes/13.0.1/ActionEnum.h"
+#include "compiler_gym/envs/llvm/service/passes/13.0.1/ActionEnums.h"
 #else
 #error "Unknown LLVM version: " LLVM_VERSION_MAJOR
 #endif
