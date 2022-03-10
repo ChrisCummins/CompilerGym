@@ -40,6 +40,8 @@ cg_cc_library(
   ABS_DEPS
     fmt
     magic_enum
+  INCLUDES
+    ${LLVM_INCLUDE_DIRS}
   PUBLIC
 )
 

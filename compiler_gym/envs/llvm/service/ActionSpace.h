@@ -5,13 +5,11 @@
 #pragma once
 
 #include "compiler_gym/service/proto/compiler_gym_service.pb.h"
+#include "llvm/Config/llvm-config.h"
 
 namespace compiler_gym::llvm_service {
 
-// TODO(github.com/facebookresearch/CompilerGym/issues/568):
-#ifndef LLVM_VERSION_MAJOR
-#define LLVM_VERSION_MAJOR 13
-#endif
+using LlvmActionSpace = CompilerGymPass;
 
 #if LLVM_VERSION_MAJOR == 10
 #include "compiler_gym/envs/llvm/service/passes/ActionEnum.h"
