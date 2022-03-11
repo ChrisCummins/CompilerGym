@@ -179,7 +179,7 @@ cg_cc_library(
 )
 
 llvm_map_components_to_libnames(_LLVM_LIBS
-  core analysis coroutines objcarcopts target codegen
+  core analysis coroutines objcarcopts target codegen passes
   x86codegen x86asmparser #TODO(boian): can these be found programmatically
   )
 cg_cc_library(
@@ -192,8 +192,10 @@ cg_cc_library(
     "${CMAKE_CURRENT_SOURCE_DIR}/passes/13.0.1/ActionHeader.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/passes/13.0.1/ActionPassBuilder.h"
     "LlvmSession.h"
+    "ApplyAction.h"
   SRCS
     "LlvmSession.cc"
+    "ApplyAction.cc"
     "${CMAKE_CURRENT_SOURCE_DIR}/passes/13.0.1/ActionPassBuilder.cc"
   DEPS
     ::ActionSpace

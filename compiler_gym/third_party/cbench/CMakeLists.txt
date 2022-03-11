@@ -5,13 +5,13 @@
 
 cg_add_all_subdirs()
 
-cg_genrule(
-  NAME cbench_tar
-  DEPENDS ::cbench
-  OUTS "llvm_bitcodes-10.0.0-cbench-v1.tar.bz2"
-  CMD "tar cjfh \"$@\" -C \"$(@D)\" cbench-v1"
-  PUBLIC
-)
+# cg_genrule(
+#   NAME cbench_tar
+#   DEPENDS ::cbench
+#   OUTS "llvm_bitcodes-10.0.0-cbench-v1.tar.bz2"
+#   CMD "tar cjfh \"$@\" -C \"$(@D)\" cbench-v1"
+#   PUBLIC
+# )
 
 cg_filegroup(
   NAME cbench

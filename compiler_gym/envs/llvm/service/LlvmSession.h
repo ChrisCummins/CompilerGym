@@ -83,16 +83,6 @@ class LlvmSession final : public CompilationSession {
   }
 
   /**
-   * Run the requested action.
-   *
-   * @param action An action to apply.
-   * @param actionHadNoEffect Set to true if LLVM reported that any passes that
-   *    were run made no modifications to the module.
-   * @return `OK` on success.
-   */
-  [[nodiscard]] grpc::Status applyPassAction(LlvmAction action, bool& actionHadNoEffect);
-
-  /**
    * Run the given pass, possibly modifying the underlying LLVM module.
    *
    * @return Whether the module was modified.

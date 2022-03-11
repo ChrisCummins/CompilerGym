@@ -136,6 +136,7 @@ def make_action_space_sources(passes: List[Dict[str, str]], outdir: Path):
 
     with write(outdir / "ActionPassBuilder.h") as f:
         print('#include "llvm/Passes/PassBuilder.h"', file=f)
+        print('#include "ActionEnums.h"')
         print(file=f)
         print(
             "llvm::ModulePassManager createActionPipeline(CompilerGymPass action);",
@@ -152,13 +153,13 @@ def make_action_space_sources(passes: List[Dict[str, str]], outdir: Path):
             file=f,
         )
         print("  llvm::ModulePassManager pm;", file=f)
+        print("  llvm::FunctionPassManager fpm;", file=f)
         print("  switch (action) {", file=f)
         for pass_ in passes:
             print(f"    case CompilerGymPass::{enumname(pass_)}: \\", file=f)
             if pass_["type"] == "ModulePass":
                 print(f"      pm.addPass({pass_['create_statement']});", file=f)
             elif pass_["type"] == "FunctionPass":
-                print("      llvm::FunctionPassManager fpm;", file=f)
                 print(f"      fpm.addPass({pass_['create_statement']});", file=f)
                 print(
                     "      pm.addPass(createModuleToFunctionPassAdaptor(std::move(fpm)));",
@@ -167,10 +168,12 @@ def make_action_space_sources(passes: List[Dict[str, str]], outdir: Path):
             else:
                 raise ValueError("Unhandled pass type")
             print("      break; \\", file=f)
+        print("  }", file=f)
         print("  return pm;", file=f)
         print("}", file=f)
 
     with write(outdir / "ActionEnums.h") as f:
+        print("#pragma once")
         print(file=f)
         print("enum class CompilerGymPass {", file=f)
         for pass_ in passes:

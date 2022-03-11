@@ -9,12 +9,13 @@
 
 namespace compiler_gym::llvm_service {
 
-using LlvmActionSpace = CompilerGymPass;
-
 #if LLVM_VERSION_MAJOR == 10
 #include "compiler_gym/envs/llvm/service/passes/ActionEnum.h"
 #elif LLVM_VERSION_MAJOR == 13
+}  // namespace compiler_gym::llvm_service
 #include "compiler_gym/envs/llvm/service/passes/13.0.1/ActionEnums.h"
+using LlvmAction = CompilerGymPass;
+namespace compiler_gym::llvm_service {
 #else
 #error "Unknown LLVM version: " LLVM_VERSION_MAJOR
 #endif

@@ -17,22 +17,12 @@
 
 #include "boost/filesystem.hpp"
 #include "compiler_gym/envs/llvm/service/ActionSpace.h"
+#include "compiler_gym/envs/llvm/service/ApplyAction.h"
 #include "compiler_gym/envs/llvm/service/Benchmark.h"
 #include "compiler_gym/envs/llvm/service/BenchmarkFactory.h"
 #include "compiler_gym/envs/llvm/service/Cost.h"
 #include "compiler_gym/envs/llvm/service/Observation.h"
 #include "compiler_gym/envs/llvm/service/ObservationSpaces.h"
-
-#if LLVM_VERSION_MAJOR == 10
-#include "compiler_gym/envs/llvm/service/passes/ActionHeaders.h"
-#include "compiler_gym/envs/llvm/service/passes/ActionSwitch.h"
-#elif LLVM_VERSION_MAJOR == 13
-#include "compiler_gym/envs/llvm/service/passes/13.0.1/ActionHeaders.h"
-#include "compiler_gym/envs/llvm/service/passes/13.0.1/ActionSwitch.h"
-#else
-#error "Unknown LLVM version: " LLVM_VERSION_MAJOR
-#endif
-
 #include "compiler_gym/third_party/autophase/InstCount.h"
 #include "compiler_gym/third_party/llvm/InstCount.h"
 #include "compiler_gym/util/EnumUtil.h"
@@ -138,7 +128,10 @@ Status LlvmSession::applyAction(const Event& action, bool& endOfEpisode,
                                   magic_enum::enum_name(action.value_case())));
       }
       RETURN_IF_ERROR(util::intToEnum(action.int64_value(), &actionEnum));
-      RETURN_IF_ERROR(applyPassAction(actionEnum, actionHadNoEffect));
+      RETURN_IF_ERROR(applyPassAction(actionEnum, benchmark().module(), actionHadNoEffect));
+      if (!actionHadNoEffect) {
+        benchmark().markModuleModified();
+      }
   }
 
   return Status::OK;
@@ -216,31 +209,6 @@ Status LlvmSession::handleSessionParameter(const std::string& key, const std::st
                     fmt::format("Invalid value for llvm.apply_baseline_optimizations: {}", value));
     }
   }
-  return Status::OK;
-}
-
-Status LlvmSession::applyPassAction(LlvmAction action, bool& actionHadNoEffect) {
-#ifdef EXPERIMENTAL_UNSTABLE_GVN_SINK_PASS
-  // NOTE(https://github.com/facebookresearch/CompilerGym/issues/46): The
-  // -gvn-sink pass has been found to have nondeterministic behavior so has
-  // been disabled in compiler_gym/envs/llvm/service/pass/config.py. Invoking
-  // the command line was found to produce more stable results.
-  if (action == LlvmAction::GVNSINK_PASS) {
-    RETURN_IF_ERROR(runOptWithArgs({"-gvn-sink"}));
-    actionHadNoEffect = true;
-    return Status::OK;
-  }
-#endif
-
-// Use the generated HANDLE_PASS() switch statement to dispatch to runPass().
-#define HANDLE_PASS(pass) actionHadNoEffect = !runPass(pass);
-  HANDLE_ACTION(action, HANDLE_PASS)
-#undef HANDLE_PASS
-
-  if (!actionHadNoEffect) {
-    benchmark().markModuleModified();
-  }
-
   return Status::OK;
 }
 
