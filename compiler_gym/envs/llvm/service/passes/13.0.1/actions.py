@@ -8,217 +8,217 @@ from enum import Enum
 
 
 class actions(Enum):
-    ADCEPASS = {
+    ADCE = {
         "class_name": "ADCEPass",
         "create_statement": "llvm::ADCEPass()",
         "header": "llvm/Transforms/Scalar/ADCE.h",
         "type": "FunctionPass",
     }
-    ADD_DISCRIMINATORS_PASS = {
+    ADD_DISCRIMINATORS = {
         "class_name": "AddDiscriminatorsPass",
         "create_statement": "llvm::AddDiscriminatorsPass()",
         "header": "llvm/Transforms/Utils/AddDiscriminators.h",
         "type": "FunctionPass",
     }
-    AGGRESSIVE_INST_COMBINE_PASS = {
+    AGGRESSIVE_INST_COMBINE = {
         "class_name": "AggressiveInstCombinePass",
         "create_statement": "llvm::AggressiveInstCombinePass()",
         "header": "llvm/Transforms/AggressiveInstCombine/AggressiveInstCombine.h",
         "type": "FunctionPass",
     }
-    ALIGNMENT_FROM_ASSUMPTIONS_PASS = {
+    ALIGNMENT_FROM_ASSUMPTIONS = {
         "class_name": "AlignmentFromAssumptionsPass",
         "create_statement": "llvm::AlignmentFromAssumptionsPass()",
         "header": "llvm/Transforms/Scalar/AlignmentFromAssumptions.h",
         "type": "FunctionPass",
     }
-    ALWAYS_INLINER_PASS = {
+    ALWAYS_INLINER = {
         "class_name": "AlwaysInlinerPass",
         "create_statement": "llvm::AlwaysInlinerPass()",
         "header": "llvm/Transforms/IPO/AlwaysInliner.h",
         "type": "ModulePass",
     }
-    ANNOTATION2METADATA_PASS = {
+    ANNOTATION2METADATA = {
         "class_name": "Annotation2MetadataPass",
         "create_statement": "llvm::Annotation2MetadataPass()",
         "header": "llvm/Transforms/IPO/Annotation2Metadata.h",
         "type": "ModulePass",
     }
-    ANNOTATION_REMARKS_PASS = {
+    ANNOTATION_REMARKS = {
         "class_name": "AnnotationRemarksPass",
         "create_statement": "llvm::AnnotationRemarksPass()",
         "header": "llvm/Transforms/Scalar/AnnotationRemarks.h",
         "type": "FunctionPass",
     }
-    ASSUME_BUILDER_PASS = {
+    ASSUME_BUILDER = {
         "class_name": "AssumeBuilderPass",
         "create_statement": "llvm::AssumeBuilderPass()",
         "header": "llvm/Transforms/Utils/AssumeBundleBuilder.h",
         "type": "FunctionPass",
     }
-    ASSUME_SIMPLIFY_PASS = {
+    ASSUME_SIMPLIFY = {
         "class_name": "AssumeSimplifyPass",
         "create_statement": "llvm::AssumeSimplifyPass()",
         "header": "llvm/Transforms/Utils/AssumeBundleBuilder.h",
         "type": "FunctionPass",
     }
-    ATTRIBUTOR_PASS = {
+    ATTRIBUTOR = {
         "class_name": "AttributorPass",
         "create_statement": "llvm::AttributorPass()",
         "header": "llvm/Transforms/IPO/Attributor.h",
         "type": "ModulePass",
     }
-    BDCEPASS = {
+    BDCE = {
         "class_name": "BDCEPass",
         "create_statement": "llvm::BDCEPass()",
         "header": "llvm/Transforms/Scalar/BDCE.h",
         "type": "FunctionPass",
     }
-    BLOCK_EXTRACTOR_PASS = {
+    BLOCK_EXTRACTOR = {
         "class_name": "BlockExtractorPass",
         "create_statement": "llvm::BlockExtractorPass()",
         "header": "llvm/Transforms/IPO/BlockExtractor.h",
         "type": "ModulePass",
     }
-    BREAK_CRITICAL_EDGES_PASS = {
+    BREAK_CRITICAL_EDGES = {
         "class_name": "BreakCriticalEdgesPass",
         "create_statement": "llvm::BreakCriticalEdgesPass()",
         "header": "llvm/Transforms/Utils/BreakCriticalEdges.h",
         "type": "FunctionPass",
     }
-    CALL_SITE_SPLITTING_PASS = {
+    CALL_SITE_SPLITTING = {
         "class_name": "CallSiteSplittingPass",
         "create_statement": "llvm::CallSiteSplittingPass()",
         "header": "llvm/Transforms/Scalar/CallSiteSplitting.h",
         "type": "FunctionPass",
     }
-    CALLED_VALUE_PROPAGATION_PASS = {
+    CALLED_VALUE_PROPAGATION = {
         "class_name": "CalledValuePropagationPass",
         "create_statement": "llvm::CalledValuePropagationPass()",
         "header": "llvm/Transforms/IPO/CalledValuePropagation.h",
         "type": "ModulePass",
     }
-    CANONICALIZE_ALIASES_PASS = {
+    CANONICALIZE_ALIASES = {
         "class_name": "CanonicalizeAliasesPass",
         "create_statement": "llvm::CanonicalizeAliasesPass()",
         "header": "llvm/Transforms/Utils/CanonicalizeAliases.h",
         "type": "ModulePass",
     }
-    CONSTANT_HOISTING_PASS = {
+    CONSTANT_HOISTING = {
         "class_name": "ConstantHoistingPass",
         "create_statement": "llvm::ConstantHoistingPass()",
         "header": "llvm/Transforms/Scalar/ConstantHoisting.h",
         "type": "FunctionPass",
     }
-    CONSTANT_MERGE_PASS = {
+    CONSTANT_MERGE = {
         "class_name": "ConstantMergePass",
         "create_statement": "llvm::ConstantMergePass()",
         "header": "llvm/Transforms/IPO/ConstantMerge.h",
         "type": "ModulePass",
     }
-    CONSTRAINT_ELIMINATION_PASS = {
+    CONSTRAINT_ELIMINATION = {
         "class_name": "ConstraintEliminationPass",
         "create_statement": "llvm::ConstraintEliminationPass()",
         "header": "llvm/Transforms/Scalar/ConstraintElimination.h",
         "type": "FunctionPass",
     }
-    CORO_CLEANUP_PASS = {
+    CORO_CLEANUP = {
         "class_name": "CoroCleanupPass",
         "create_statement": "llvm::CoroCleanupPass()",
         "header": "llvm/Transforms/Coroutines/CoroCleanup.h",
         "type": "FunctionPass",
     }
-    CORO_EARLY_PASS = {
+    CORO_EARLY = {
         "class_name": "CoroEarlyPass",
         "create_statement": "llvm::CoroEarlyPass()",
         "header": "llvm/Transforms/Coroutines/CoroEarly.h",
         "type": "FunctionPass",
     }
-    CORO_ELIDE_PASS = {
+    CORO_ELIDE = {
         "class_name": "CoroElidePass",
         "create_statement": "llvm::CoroElidePass()",
         "header": "llvm/Transforms/Coroutines/CoroElide.h",
         "type": "FunctionPass",
     }
-    CORRELATED_VALUE_PROPAGATION_PASS = {
+    CORRELATED_VALUE_PROPAGATION = {
         "class_name": "CorrelatedValuePropagationPass",
         "create_statement": "llvm::CorrelatedValuePropagationPass()",
         "header": "llvm/Transforms/Scalar/CorrelatedValuePropagation.h",
         "type": "FunctionPass",
     }
-    CROSS_DSOCFIPASS = {
+    CROSS_DSOCFI = {
         "class_name": "CrossDSOCFIPass",
         "create_statement": "llvm::CrossDSOCFIPass()",
         "header": "llvm/Transforms/IPO/CrossDSOCFI.h",
         "type": "ModulePass",
     }
-    DCEPASS = {
+    DCE = {
         "class_name": "DCEPass",
         "create_statement": "llvm::DCEPass()",
         "header": "llvm/Transforms/Scalar/DCE.h",
         "type": "FunctionPass",
     }
-    DFAJUMP_THREADING_PASS = {
+    DFAJUMP_THREADING = {
         "class_name": "DFAJumpThreadingPass",
         "create_statement": "llvm::DFAJumpThreadingPass()",
         "header": "llvm/Transforms/Scalar/DFAJumpThreading.h",
         "type": "FunctionPass",
     }
-    DSEPASS = {
+    DSE = {
         "class_name": "DSEPass",
         "create_statement": "llvm::DSEPass()",
         "header": "llvm/Transforms/Scalar/DeadStoreElimination.h",
         "type": "FunctionPass",
     }
-    DEAD_ARGUMENT_ELIMINATION_PASS = {
+    DEAD_ARGUMENT_ELIMINATION = {
         "class_name": "DeadArgumentEliminationPass",
         "create_statement": "llvm::DeadArgumentEliminationPass()",
         "header": "llvm/Transforms/IPO/DeadArgumentElimination.h",
         "type": "ModulePass",
     }
-    DIV_REM_PAIRS_PASS = {
+    DIV_REM_PAIRS = {
         "class_name": "DivRemPairsPass",
         "create_statement": "llvm::DivRemPairsPass()",
         "header": "llvm/Transforms/Scalar/DivRemPairs.h",
         "type": "FunctionPass",
     }
-    EARLY_CSEPASS = {
+    EARLY_CSE = {
         "class_name": "EarlyCSEPass",
         "create_statement": "llvm::EarlyCSEPass()",
         "header": "llvm/Transforms/Scalar/EarlyCSE.h",
         "type": "FunctionPass",
     }
-    ELIMINATE_AVAILABLE_EXTERNALLY_PASS = {
+    ELIMINATE_AVAILABLE_EXTERNALLY = {
         "class_name": "EliminateAvailableExternallyPass",
         "create_statement": "llvm::EliminateAvailableExternallyPass()",
         "header": "llvm/Transforms/IPO/ElimAvailExtern.h",
         "type": "ModulePass",
     }
-    FIX_IRREDUCIBLE_PASS = {
+    FIX_IRREDUCIBLE = {
         "class_name": "FixIrreduciblePass",
         "create_statement": "llvm::FixIrreduciblePass()",
         "header": "llvm/Transforms/Utils/FixIrreducible.h",
         "type": "FunctionPass",
     }
-    FLOAT2INT_PASS = {
+    FLOAT2INT = {
         "class_name": "Float2IntPass",
         "create_statement": "llvm::Float2IntPass()",
         "header": "llvm/Transforms/Scalar/Float2Int.h",
         "type": "FunctionPass",
     }
-    FORCE_FUNCTION_ATTRS_PASS = {
+    FORCE_FUNCTION_ATTRS = {
         "class_name": "ForceFunctionAttrsPass",
         "create_statement": "llvm::ForceFunctionAttrsPass()",
         "header": "llvm/Transforms/IPO/ForceFunctionAttrs.h",
         "type": "ModulePass",
     }
-    FUNCTION_IMPORT_PASS = {
+    FUNCTION_IMPORT = {
         "class_name": "FunctionImportPass",
         "create_statement": "llvm::FunctionImportPass()",
         "header": "llvm/Transforms/IPO/FunctionImport.h",
         "type": "ModulePass",
     }
-    FUNCTION_SPECIALIZATION_PASS = {
+    FUNCTION_SPECIALIZATION = {
         "class_name": "FunctionSpecializationPass",
         "create_statement": "llvm::FunctionSpecializationPass()",
         "header": "llvm/Transforms/IPO/SCCP.h",
@@ -230,79 +230,79 @@ class actions(Enum):
         "header": "llvm/Transforms/Scalar/GVN.h",
         "type": "FunctionPass",
     }
-    GVNHOIST_PASS = {
+    GVNHOIST = {
         "class_name": "GVNHoistPass",
         "create_statement": "llvm::GVNHoistPass()",
         "header": "llvm/Transforms/Scalar/GVN.h",
         "type": "FunctionPass",
     }
-    GVNSINK_PASS = {
+    GVNSINK = {
         "class_name": "GVNSinkPass",
         "create_statement": "llvm::GVNSinkPass()",
         "header": "llvm/Transforms/Scalar/GVN.h",
         "type": "FunctionPass",
     }
-    GLOBAL_DCEPASS = {
+    GLOBAL_DCE = {
         "class_name": "GlobalDCEPass",
         "create_statement": "llvm::GlobalDCEPass()",
         "header": "llvm/Transforms/IPO/GlobalDCE.h",
         "type": "ModulePass",
     }
-    GLOBAL_OPT_PASS = {
+    GLOBAL_OPT = {
         "class_name": "GlobalOptPass",
         "create_statement": "llvm::GlobalOptPass()",
         "header": "llvm/Transforms/IPO/GlobalOpt.h",
         "type": "ModulePass",
     }
-    GLOBAL_SPLIT_PASS = {
+    GLOBAL_SPLIT = {
         "class_name": "GlobalSplitPass",
         "create_statement": "llvm::GlobalSplitPass()",
         "header": "llvm/Transforms/IPO/GlobalSplit.h",
         "type": "ModulePass",
     }
-    GUARD_WIDENING_PASS = {
+    GUARD_WIDENING = {
         "class_name": "GuardWideningPass",
         "create_statement": "llvm::GuardWideningPass()",
         "header": "llvm/Transforms/Scalar/GuardWidening.h",
         "type": "FunctionPass",
     }
-    HELLO_WORLD_PASS = {
+    HELLO_WORLD = {
         "class_name": "HelloWorldPass",
         "create_statement": "llvm::HelloWorldPass()",
         "header": "llvm/Transforms/Utils/HelloWorld.h",
         "type": "FunctionPass",
     }
-    HOT_COLD_SPLITTING_PASS = {
+    HOT_COLD_SPLITTING = {
         "class_name": "HotColdSplittingPass",
         "create_statement": "llvm::HotColdSplittingPass()",
         "header": "llvm/Transforms/IPO/HotColdSplitting.h",
         "type": "ModulePass",
     }
-    IPSCCPPASS = {
+    IPSCCP = {
         "class_name": "IPSCCPPass",
         "create_statement": "llvm::IPSCCPPass()",
         "header": "llvm/Transforms/IPO/SCCP.h",
         "type": "ModulePass",
     }
-    IRCEPASS = {
+    IRCE = {
         "class_name": "IRCEPass",
         "create_statement": "llvm::IRCEPass()",
         "header": "llvm/Transforms/Scalar/InductiveRangeCheckElimination.h",
         "type": "FunctionPass",
     }
-    IROUTLINER_PASS = {
+    IROUTLINER = {
         "class_name": "IROutlinerPass",
         "create_statement": "llvm::IROutlinerPass()",
         "header": "llvm/Transforms/IPO/IROutliner.h",
         "type": "ModulePass",
     }
-    INFER_ADDRESS_SPACES_PASS = {
+    INFER_ADDRESS_SPACES = {
         "class_name": "InferAddressSpacesPass",
         "create_statement": "llvm::InferAddressSpacesPass()",
         "header": "llvm/Transforms/Scalar/InferAddressSpaces.h",
         "type": "FunctionPass",
     }
-    INFER_FUNCTION_ATTRS_PASS = {
+    INFER_FUNCTION_ATTRS = {
         "class_name": "InferFunctionAttrsPass",
         "create_statement": "llvm::InferFunctionAttrsPass()",
         "header": "llvm/Transforms/IPO/InferFunctionAttrs.h",
@@ -314,313 +314,313 @@ class actions(Enum):
         "header": "llvm/Transforms/Utils/InjectTLIMappings.h",
         "type": "FunctionPass",
     }
-    INST_COMBINE_PASS = {
+    INST_COMBINE = {
         "class_name": "InstCombinePass",
         "create_statement": "llvm::InstCombinePass()",
         "header": "llvm/Transforms/InstCombine/InstCombine.h",
         "type": "FunctionPass",
     }
-    INST_SIMPLIFY_PASS = {
+    INST_SIMPLIFY = {
         "class_name": "InstSimplifyPass",
         "create_statement": "llvm::InstSimplifyPass()",
         "header": "llvm/Transforms/Scalar/InstSimplifyPass.h",
         "type": "FunctionPass",
     }
-    INSTRUCTION_NAMER_PASS = {
+    INSTRUCTION_NAMER = {
         "class_name": "InstructionNamerPass",
         "create_statement": "llvm::InstructionNamerPass()",
         "header": "llvm/Transforms/Utils/InstructionNamer.h",
         "type": "FunctionPass",
     }
-    INTERNALIZE_PASS = {
+    INTERNALIZE = {
         "class_name": "InternalizePass",
         "create_statement": "llvm::InternalizePass()",
         "header": "llvm/Transforms/IPO/Internalize.h",
         "type": "ModulePass",
     }
-    JUMP_THREADING_PASS = {
+    JUMP_THREADING = {
         "class_name": "JumpThreadingPass",
         "create_statement": "llvm::JumpThreadingPass()",
         "header": "llvm/Transforms/Scalar/JumpThreading.h",
         "type": "FunctionPass",
     }
-    LCSSAPASS = {
+    LCSSA = {
         "class_name": "LCSSAPass",
         "create_statement": "llvm::LCSSAPass()",
         "header": "llvm/Transforms/Utils/LCSSA.h",
         "type": "FunctionPass",
     }
-    LIB_CALLS_SHRINK_WRAP_PASS = {
+    LIB_CALLS_SHRINK_WRAP = {
         "class_name": "LibCallsShrinkWrapPass",
         "create_statement": "llvm::LibCallsShrinkWrapPass()",
         "header": "llvm/Transforms/Utils/LibCallsShrinkWrap.h",
         "type": "FunctionPass",
     }
-    LOAD_STORE_VECTORIZER_PASS = {
+    LOAD_STORE_VECTORIZER = {
         "class_name": "LoadStoreVectorizerPass",
         "create_statement": "llvm::LoadStoreVectorizerPass()",
         "header": "llvm/Transforms/Vectorize/LoadStoreVectorizer.h",
         "type": "FunctionPass",
     }
-    LOOP_DATA_PREFETCH_PASS = {
+    LOOP_DATA_PREFETCH = {
         "class_name": "LoopDataPrefetchPass",
         "create_statement": "llvm::LoopDataPrefetchPass()",
         "header": "llvm/Transforms/Scalar/LoopDataPrefetch.h",
         "type": "FunctionPass",
     }
-    LOOP_DISTRIBUTE_PASS = {
+    LOOP_DISTRIBUTE = {
         "class_name": "LoopDistributePass",
         "create_statement": "llvm::LoopDistributePass()",
         "header": "llvm/Transforms/Scalar/LoopDistribute.h",
         "type": "FunctionPass",
     }
-    LOOP_EXTRACTOR_PASS = {
+    LOOP_EXTRACTOR = {
         "class_name": "LoopExtractorPass",
         "create_statement": "llvm::LoopExtractorPass()",
         "header": "llvm/Transforms/IPO/LoopExtractor.h",
         "type": "ModulePass",
     }
-    LOOP_FUSE_PASS = {
+    LOOP_FUSE = {
         "class_name": "LoopFusePass",
         "create_statement": "llvm::LoopFusePass()",
         "header": "llvm/Transforms/Scalar/LoopFuse.h",
         "type": "FunctionPass",
     }
-    LOOP_LOAD_ELIMINATION_PASS = {
+    LOOP_LOAD_ELIMINATION = {
         "class_name": "LoopLoadEliminationPass",
         "create_statement": "llvm::LoopLoadEliminationPass()",
         "header": "llvm/Transforms/Scalar/LoopLoadElimination.h",
         "type": "FunctionPass",
     }
-    LOOP_SIMPLIFY_PASS = {
+    LOOP_SIMPLIFY = {
         "class_name": "LoopSimplifyPass",
         "create_statement": "llvm::LoopSimplifyPass()",
         "header": "llvm/Transforms/Utils/LoopSimplify.h",
         "type": "FunctionPass",
     }
-    LOOP_SINK_PASS = {
+    LOOP_SINK = {
         "class_name": "LoopSinkPass",
         "create_statement": "llvm::LoopSinkPass()",
         "header": "llvm/Transforms/Scalar/LoopSink.h",
         "type": "FunctionPass",
     }
-    LOOP_UNROLL_PASS = {
+    LOOP_UNROLL = {
         "class_name": "LoopUnrollPass",
         "create_statement": "llvm::LoopUnrollPass()",
         "header": "llvm/Transforms/Scalar/LoopUnrollPass.h",
         "type": "FunctionPass",
     }
-    LOOP_VECTORIZE_PASS = {
+    LOOP_VECTORIZE = {
         "class_name": "LoopVectorizePass",
         "create_statement": "llvm::LoopVectorizePass()",
         "header": "llvm/Transforms/Vectorize/LoopVectorize.h",
         "type": "FunctionPass",
     }
-    LOOP_VERSIONING_PASS = {
+    LOOP_VERSIONING = {
         "class_name": "LoopVersioningPass",
         "create_statement": "llvm::LoopVersioningPass()",
         "header": "llvm/Transforms/Utils/LoopVersioning.h",
         "type": "FunctionPass",
     }
-    LOWER_ATOMIC_PASS = {
+    LOWER_ATOMIC = {
         "class_name": "LowerAtomicPass",
         "create_statement": "llvm::LowerAtomicPass()",
         "header": "llvm/Transforms/Scalar/LowerAtomic.h",
         "type": "FunctionPass",
     }
-    LOWER_CONSTANT_INTRINSICS_PASS = {
+    LOWER_CONSTANT_INTRINSICS = {
         "class_name": "LowerConstantIntrinsicsPass",
         "create_statement": "llvm::LowerConstantIntrinsicsPass()",
         "header": "llvm/Transforms/Scalar/LowerConstantIntrinsics.h",
         "type": "FunctionPass",
     }
-    LOWER_EXPECT_INTRINSIC_PASS = {
+    LOWER_EXPECT_INTRINSIC = {
         "class_name": "LowerExpectIntrinsicPass",
         "create_statement": "llvm::LowerExpectIntrinsicPass()",
         "header": "llvm/Transforms/Scalar/LowerExpectIntrinsic.h",
         "type": "FunctionPass",
     }
-    LOWER_GUARD_INTRINSIC_PASS = {
+    LOWER_GUARD_INTRINSIC = {
         "class_name": "LowerGuardIntrinsicPass",
         "create_statement": "llvm::LowerGuardIntrinsicPass()",
         "header": "llvm/Transforms/Scalar/LowerGuardIntrinsic.h",
         "type": "FunctionPass",
     }
-    LOWER_INVOKE_PASS = {
+    LOWER_INVOKE = {
         "class_name": "LowerInvokePass",
         "create_statement": "llvm::LowerInvokePass()",
         "header": "llvm/Transforms/Utils/LowerInvoke.h",
         "type": "FunctionPass",
     }
-    LOWER_MATRIX_INTRINSICS_PASS = {
+    LOWER_MATRIX_INTRINSICS = {
         "class_name": "LowerMatrixIntrinsicsPass",
         "create_statement": "llvm::LowerMatrixIntrinsicsPass()",
         "header": "llvm/Transforms/Scalar/LowerMatrixIntrinsics.h",
         "type": "FunctionPass",
     }
-    LOWER_SWITCH_PASS = {
+    LOWER_SWITCH = {
         "class_name": "LowerSwitchPass",
         "create_statement": "llvm::LowerSwitchPass()",
         "header": "llvm/Transforms/Utils/LowerSwitch.h",
         "type": "FunctionPass",
     }
-    LOWER_TYPE_TESTS_PASS = {
+    LOWER_TYPE_TESTS = {
         "class_name": "LowerTypeTestsPass",
         "create_statement": "llvm::LowerTypeTestsPass()",
         "header": "llvm/Transforms/IPO/LowerTypeTests.h",
         "type": "ModulePass",
     }
-    LOWER_WIDENABLE_CONDITION_PASS = {
+    LOWER_WIDENABLE_CONDITION = {
         "class_name": "LowerWidenableConditionPass",
         "create_statement": "llvm::LowerWidenableConditionPass()",
         "header": "llvm/Transforms/Scalar/LowerWidenableCondition.h",
         "type": "FunctionPass",
     }
-    MAKE_GUARDS_EXPLICIT_PASS = {
+    MAKE_GUARDS_EXPLICIT = {
         "class_name": "MakeGuardsExplicitPass",
         "create_statement": "llvm::MakeGuardsExplicitPass()",
         "header": "llvm/Transforms/Scalar/MakeGuardsExplicit.h",
         "type": "FunctionPass",
     }
-    MEM_CPY_OPT_PASS = {
+    MEM_CPY_OPT = {
         "class_name": "MemCpyOptPass",
         "create_statement": "llvm::MemCpyOptPass()",
         "header": "llvm/Transforms/Scalar/MemCpyOptimizer.h",
         "type": "FunctionPass",
     }
-    MERGE_FUNCTIONS_PASS = {
+    MERGE_FUNCTIONS = {
         "class_name": "MergeFunctionsPass",
         "create_statement": "llvm::MergeFunctionsPass()",
         "header": "llvm/Transforms/IPO/MergeFunctions.h",
         "type": "ModulePass",
     }
-    MERGE_ICMPS_PASS = {
+    MERGE_ICMPS = {
         "class_name": "MergeICmpsPass",
         "create_statement": "llvm::MergeICmpsPass()",
         "header": "llvm/Transforms/Scalar/MergeICmps.h",
         "type": "FunctionPass",
     }
-    MERGED_LOAD_STORE_MOTION_PASS = {
+    MERGED_LOAD_STORE_MOTION = {
         "class_name": "MergedLoadStoreMotionPass",
         "create_statement": "llvm::MergedLoadStoreMotionPass()",
         "header": "llvm/Transforms/Scalar/MergedLoadStoreMotion.h",
         "type": "FunctionPass",
     }
-    META_RENAMER_PASS = {
+    META_RENAMER = {
         "class_name": "MetaRenamerPass",
         "create_statement": "llvm::MetaRenamerPass()",
         "header": "llvm/Transforms/Utils/MetaRenamer.h",
         "type": "ModulePass",
     }
-    MODULE_INLINER_WRAPPER_PASS = {
+    MODULE_INLINER_WRAPPER = {
         "class_name": "ModuleInlinerWrapperPass",
         "create_statement": "llvm::ModuleInlinerWrapperPass()",
         "header": "llvm/Transforms/IPO/Inliner.h",
         "type": "ModulePass",
     }
-    NAME_ANON_GLOBAL_PASS = {
+    NAME_ANON_GLOBAL = {
         "class_name": "NameAnonGlobalPass",
         "create_statement": "llvm::NameAnonGlobalPass()",
         "header": "llvm/Transforms/Utils/NameAnonGlobals.h",
         "type": "ModulePass",
     }
-    NARY_REASSOCIATE_PASS = {
+    NARY_REASSOCIATE = {
         "class_name": "NaryReassociatePass",
         "create_statement": "llvm::NaryReassociatePass()",
         "header": "llvm/Transforms/Scalar/NaryReassociate.h",
         "type": "FunctionPass",
     }
-    NEW_GVNPASS = {
+    NEW_GVN = {
         "class_name": "NewGVNPass",
         "create_statement": "llvm::NewGVNPass()",
         "header": "llvm/Transforms/Scalar/NewGVN.h",
         "type": "FunctionPass",
     }
-    OBJ_CARCAPELIM_PASS = {
+    OBJ_CARCAPELIM = {
         "class_name": "ObjCARCAPElimPass",
         "create_statement": "llvm::ObjCARCAPElimPass()",
         "header": "llvm/Transforms/ObjCARC.h",
         "type": "ModulePass",
     }
-    OBJ_CARCCONTRACT_PASS = {
+    OBJ_CARCCONTRACT = {
         "class_name": "ObjCARCContractPass",
         "create_statement": "llvm::ObjCARCContractPass()",
         "header": "llvm/Transforms/ObjCARC.h",
         "type": "FunctionPass",
     }
-    OBJ_CARCEXPAND_PASS = {
+    OBJ_CARCEXPAND = {
         "class_name": "ObjCARCExpandPass",
         "create_statement": "llvm::ObjCARCExpandPass()",
         "header": "llvm/Transforms/ObjCARC.h",
         "type": "FunctionPass",
     }
-    OBJ_CARCOPT_PASS = {
+    OBJ_CARCOPT = {
         "class_name": "ObjCARCOptPass",
         "create_statement": "llvm::ObjCARCOptPass()",
         "header": "llvm/Transforms/ObjCARC.h",
         "type": "FunctionPass",
     }
-    OPEN_MPOPT_PASS = {
+    OPEN_MPOPT = {
         "class_name": "OpenMPOptPass",
         "create_statement": "llvm::OpenMPOptPass()",
         "header": "llvm/Transforms/IPO/OpenMPOpt.h",
         "type": "ModulePass",
     }
-    PARTIAL_INLINER_PASS = {
+    PARTIAL_INLINER = {
         "class_name": "PartialInlinerPass",
         "create_statement": "llvm::PartialInlinerPass()",
         "header": "llvm/Transforms/IPO/PartialInlining.h",
         "type": "ModulePass",
     }
-    PARTIALLY_INLINE_LIB_CALLS_PASS = {
+    PARTIALLY_INLINE_LIB_CALLS = {
         "class_name": "PartiallyInlineLibCallsPass",
         "create_statement": "llvm::PartiallyInlineLibCallsPass()",
         "header": "llvm/Transforms/Scalar/PartiallyInlineLibCalls.h",
         "type": "FunctionPass",
     }
-    PREDICATE_INFO_VERIFIER_PASS = {
+    PREDICATE_INFO_VERIFIER = {
         "class_name": "PredicateInfoVerifierPass",
         "create_statement": "llvm::PredicateInfoVerifierPass()",
         "header": "llvm/Transforms/Utils/PredicateInfo.h",
         "type": "FunctionPass",
     }
-    PROMOTE_PASS = {
+    PROMOTE = {
         "class_name": "PromotePass",
         "create_statement": "llvm::PromotePass()",
         "header": "llvm/Transforms/Utils/Mem2Reg.h",
         "type": "FunctionPass",
     }
-    PSEUDO_PROBE_UPDATE_PASS = {
+    PSEUDO_PROBE_UPDATE = {
         "class_name": "PseudoProbeUpdatePass",
         "create_statement": "llvm::PseudoProbeUpdatePass()",
         "header": "llvm/Transforms/IPO/SampleProfileProbe.h",
         "type": "ModulePass",
     }
-    REASSOCIATE_PASS = {
+    REASSOCIATE = {
         "class_name": "ReassociatePass",
         "create_statement": "llvm::ReassociatePass()",
         "header": "llvm/Transforms/Scalar/Reassociate.h",
         "type": "FunctionPass",
     }
-    REDUNDANT_DBG_INST_ELIMINATION_PASS = {
+    REDUNDANT_DBG_INST_ELIMINATION = {
         "class_name": "RedundantDbgInstEliminationPass",
         "create_statement": "llvm::RedundantDbgInstEliminationPass()",
         "header": "llvm/Transforms/Scalar/DCE.h",
         "type": "FunctionPass",
     }
-    REG_TO_MEM_PASS = {
+    REG_TO_MEM = {
         "class_name": "RegToMemPass",
         "create_statement": "llvm::RegToMemPass()",
         "header": "llvm/Transforms/Scalar/Reg2Mem.h",
         "type": "FunctionPass",
     }
-    REL_LOOKUP_TABLE_CONVERTER_PASS = {
+    REL_LOOKUP_TABLE_CONVERTER = {
         "class_name": "RelLookupTableConverterPass",
         "create_statement": "llvm::RelLookupTableConverterPass()",
         "header": "llvm/Transforms/Utils/RelLookupTableConverter.h",
         "type": "ModulePass",
     }
-    REVERSE_POST_ORDER_FUNCTION_ATTRS_PASS = {
+    REVERSE_POST_ORDER_FUNCTION_ATTRS = {
         "class_name": "ReversePostOrderFunctionAttrsPass",
         "create_statement": "llvm::ReversePostOrderFunctionAttrsPass()",
         "header": "llvm/Transforms/IPO/FunctionAttrs.h",
@@ -632,19 +632,19 @@ class actions(Enum):
         "header": "llvm/Transforms/Scalar/RewriteStatepointsForGC.h",
         "type": "ModulePass",
     }
-    REWRITE_SYMBOL_PASS = {
+    REWRITE_SYMBOL = {
         "class_name": "RewriteSymbolPass",
         "create_statement": "llvm::RewriteSymbolPass()",
         "header": "llvm/Transforms/Utils/SymbolRewriter.h",
         "type": "ModulePass",
     }
-    SCCPPASS = {
+    SCCP = {
         "class_name": "SCCPPass",
         "create_statement": "llvm::SCCPPass()",
         "header": "llvm/Transforms/Scalar/SCCP.h",
         "type": "FunctionPass",
     }
-    SLPVECTORIZER_PASS = {
+    SLPVECTORIZER = {
         "class_name": "SLPVectorizerPass",
         "create_statement": "llvm::SLPVectorizerPass()",
         "header": "llvm/Transforms/Vectorize/SLPVectorizer.h",
@@ -656,67 +656,67 @@ class actions(Enum):
         "header": "llvm/Transforms/Scalar/SROA.h",
         "type": "FunctionPass",
     }
-    SAMPLE_PROFILE_LOADER_PASS = {
+    SAMPLE_PROFILE_LOADER = {
         "class_name": "SampleProfileLoaderPass",
         "create_statement": "llvm::SampleProfileLoaderPass()",
         "header": "llvm/Transforms/IPO/SampleProfile.h",
         "type": "ModulePass",
     }
-    SCALARIZE_MASKED_MEM_INTRIN_PASS = {
+    SCALARIZE_MASKED_MEM_INTRIN = {
         "class_name": "ScalarizeMaskedMemIntrinPass",
         "create_statement": "llvm::ScalarizeMaskedMemIntrinPass()",
         "header": "llvm/Transforms/Scalar/ScalarizeMaskedMemIntrin.h",
         "type": "FunctionPass",
     }
-    SCALARIZER_PASS = {
+    SCALARIZER = {
         "class_name": "ScalarizerPass",
         "create_statement": "llvm::ScalarizerPass()",
         "header": "llvm/Transforms/Scalar/Scalarizer.h",
         "type": "FunctionPass",
     }
-    SEPARATE_CONST_OFFSET_FROM_GEPPASS = {
+    SEPARATE_CONST_OFFSET_FROM_GEP = {
         "class_name": "SeparateConstOffsetFromGEPPass",
         "create_statement": "llvm::SeparateConstOffsetFromGEPPass()",
         "header": "llvm/Transforms/Scalar/SeparateConstOffsetFromGEP.h",
         "type": "FunctionPass",
     }
-    SIMPLIFY_CFGPASS = {
+    SIMPLIFY_CFG = {
         "class_name": "SimplifyCFGPass",
         "create_statement": "llvm::SimplifyCFGPass()",
         "header": "llvm/Transforms/Scalar/SimplifyCFG.h",
         "type": "FunctionPass",
     }
-    SINKING_PASS = {
+    SINKING = {
         "class_name": "SinkingPass",
         "create_statement": "llvm::SinkingPass()",
         "header": "llvm/Transforms/Scalar/Sink.h",
         "type": "FunctionPass",
     }
-    SPECULATIVE_EXECUTION_PASS = {
+    SPECULATIVE_EXECUTION = {
         "class_name": "SpeculativeExecutionPass",
         "create_statement": "llvm::SpeculativeExecutionPass()",
         "header": "llvm/Transforms/Scalar/SpeculativeExecution.h",
         "type": "FunctionPass",
     }
-    STRAIGHT_LINE_STRENGTH_REDUCE_PASS = {
+    STRAIGHT_LINE_STRENGTH_REDUCE = {
         "class_name": "StraightLineStrengthReducePass",
         "create_statement": "llvm::StraightLineStrengthReducePass()",
         "header": "llvm/Transforms/Scalar/StraightLineStrengthReduce.h",
         "type": "FunctionPass",
     }
-    STRIP_DEAD_DEBUG_INFO_PASS = {
+    STRIP_DEAD_DEBUG_INFO = {
         "class_name": "StripDeadDebugInfoPass",
         "create_statement": "llvm::StripDeadDebugInfoPass()",
         "header": "llvm/Transforms/IPO/StripSymbols.h",
         "type": "ModulePass",
     }
-    STRIP_DEAD_PROTOTYPES_PASS = {
+    STRIP_DEAD_PROTOTYPES = {
         "class_name": "StripDeadPrototypesPass",
         "create_statement": "llvm::StripDeadPrototypesPass()",
         "header": "llvm/Transforms/IPO/StripDeadPrototypes.h",
         "type": "ModulePass",
     }
-    STRIP_DEBUG_DECLARE_PASS = {
+    STRIP_DEBUG_DECLARE = {
         "class_name": "StripDebugDeclarePass",
         "create_statement": "llvm::StripDebugDeclarePass()",
         "header": "llvm/Transforms/IPO/StripSymbols.h",
@@ -728,25 +728,25 @@ class actions(Enum):
         "header": "llvm/Transforms/Utils/StripGCRelocates.h",
         "type": "FunctionPass",
     }
-    STRIP_NON_DEBUG_SYMBOLS_PASS = {
+    STRIP_NON_DEBUG_SYMBOLS = {
         "class_name": "StripNonDebugSymbolsPass",
         "create_statement": "llvm::StripNonDebugSymbolsPass()",
         "header": "llvm/Transforms/IPO/StripSymbols.h",
         "type": "ModulePass",
     }
-    STRIP_NON_LINE_TABLE_DEBUG_INFO_PASS = {
+    STRIP_NON_LINE_TABLE_DEBUG_INFO = {
         "class_name": "StripNonLineTableDebugInfoPass",
         "create_statement": "llvm::StripNonLineTableDebugInfoPass()",
         "header": "llvm/Transforms/Utils/StripNonLineTableDebugInfo.h",
         "type": "ModulePass",
     }
-    STRIP_SYMBOLS_PASS = {
+    STRIP_SYMBOLS = {
         "class_name": "StripSymbolsPass",
         "create_statement": "llvm::StripSymbolsPass()",
         "header": "llvm/Transforms/IPO/StripSymbols.h",
         "type": "ModulePass",
     }
-    STRUCTURIZE_CFGPASS = {
+    STRUCTURIZE_CFG = {
         "class_name": "StructurizeCFGPass",
         "create_statement": "llvm::StructurizeCFGPass()",
         "header": "llvm/Transforms/Scalar/StructurizeCFG.h",
@@ -758,37 +758,37 @@ class actions(Enum):
         "header": "llvm/Transforms/IPO/SyntheticCountsPropagation.h",
         "type": "ModulePass",
     }
-    TAIL_CALL_ELIM_PASS = {
+    TAIL_CALL_ELIM = {
         "class_name": "TailCallElimPass",
         "create_statement": "llvm::TailCallElimPass()",
         "header": "llvm/Transforms/Scalar/TailRecursionElimination.h",
         "type": "FunctionPass",
     }
-    UNIFY_FUNCTION_EXIT_NODES_PASS = {
+    UNIFY_FUNCTION_EXIT_NODES = {
         "class_name": "UnifyFunctionExitNodesPass",
         "create_statement": "llvm::UnifyFunctionExitNodesPass()",
         "header": "llvm/Transforms/Utils/UnifyFunctionExitNodes.h",
         "type": "FunctionPass",
     }
-    UNIFY_LOOP_EXITS_PASS = {
+    UNIFY_LOOP_EXITS = {
         "class_name": "UnifyLoopExitsPass",
         "create_statement": "llvm::UnifyLoopExitsPass()",
         "header": "llvm/Transforms/Utils/UnifyLoopExits.h",
         "type": "FunctionPass",
     }
-    VECTOR_COMBINE_PASS = {
+    VECTOR_COMBINE = {
         "class_name": "VectorCombinePass",
         "create_statement": "llvm::VectorCombinePass()",
         "header": "llvm/Transforms/Vectorize/VectorCombine.h",
         "type": "FunctionPass",
     }
-    WARN_MISSED_TRANSFORMATIONS_PASS = {
+    WARN_MISSED_TRANSFORMATIONS = {
         "class_name": "WarnMissedTransformationsPass",
         "create_statement": "llvm::WarnMissedTransformationsPass()",
         "header": "llvm/Transforms/Scalar/WarnMissedTransforms.h",
         "type": "FunctionPass",
     }
-    WHOLE_PROGRAM_DEVIRT_PASS = {
+    WHOLE_PROGRAM_DEVIRT = {
         "class_name": "WholeProgramDevirtPass",
         "create_statement": "llvm::WholeProgramDevirtPass()",
         "header": "llvm/Transforms/IPO/WholeProgramDevirt.h",

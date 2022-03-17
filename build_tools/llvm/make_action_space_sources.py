@@ -105,7 +105,16 @@ def split_camel_caps(string: str) -> List[str]:
 
 
 def enumname(pass_: Dict[str, str]) -> str:
-    return "_".join([x.upper() for x in split_camel_caps(pass_["class_name"])])
+    name = "_".join([x.upper() for x in split_camel_caps(pass_["class_name"])])
+    if name.endswith("PASS"):
+        name = name[:-4]
+    if name.endswith("_"):
+        name = name[:-1]
+    return name
+
+
+def flagname(pass_: Dict[str, str]) -> str:
+    return enumname(pass_).lower().replace("_", "-")
 
 
 @contextmanager
@@ -139,7 +148,11 @@ def make_action_space_sources(passes: List[Dict[str, str]], outdir: Path):
         print('#include "ActionEnums.h"')
         print(file=f)
         print(
-            "llvm::ModulePassManager createActionPipeline(CompilerGymPass action);",
+            "llvm::ModulePassManager createPassManagerFromAction(CompilerGymPass action);",
+            file=f,
+        )
+        print(
+            "void addActionToPassManager(CompilerGymPass action, llvm::ModulePassManager& pm);",
             file=f,
         )
 
@@ -149,14 +162,22 @@ def make_action_space_sources(passes: List[Dict[str, str]], outdir: Path):
             print(f'#include "{header}"', file=f)
         print(file=f)
         print(
-            "llvm::ModulePassManager createActionPipeline(CompilerGymPass action) {",
+            "llvm::ModulePassManager createPassManagerFromAction(CompilerGymPass action) {",
             file=f,
         )
         print("  llvm::ModulePassManager pm;", file=f)
+        print("  addActionToPassManager(action, pm);", file=f)
+        print("  return pm;", file=f)
+        print("}", file=f)
+        print(file=f)
+        print(
+            "void addActionToPassManager(CompilerGymPass action, llvm::ModulePassManager& pm) {",
+            file=f,
+        )
         print("  llvm::FunctionPassManager fpm;", file=f)
         print("  switch (action) {", file=f)
         for pass_ in passes:
-            print(f"    case CompilerGymPass::{enumname(pass_)}: \\", file=f)
+            print(f"    case CompilerGymPass::{enumname(pass_)}:", file=f)
             if pass_["type"] == "ModulePass":
                 print(f"      pm.addPass({pass_['create_statement']});", file=f)
             elif pass_["type"] == "FunctionPass":
@@ -167,9 +188,8 @@ def make_action_space_sources(passes: List[Dict[str, str]], outdir: Path):
                 )
             else:
                 raise ValueError("Unhandled pass type")
-            print("      break; \\", file=f)
+            print("      break;", file=f)
         print("  }", file=f)
-        print("  return pm;", file=f)
         print("}", file=f)
 
     with write(outdir / "ActionEnums.h") as f:
@@ -210,14 +230,22 @@ def make_action_space_sources(passes: List[Dict[str, str]], outdir: Path):
 #include "llvm/Support/CommandLine.h"
 
 static cl::list<CompilerGymPass> CompilerGymPassList(
-    "cg-passes",
+    "cg-pipeline",
     cl::desc("A list of passes to run"),
     cl::ZeroOrMore,
     cl::values(""",
             file=f,
         )
-        for pass_ in passes:
-            print(f'        clEnumVal({enumname(pass_)}, ""),', file=f)
+        # The last item in the list cannot have a trailing comma.
+        for pass_ in passes[:-1]:
+            print(
+                f'        clEnumValN(CompilerGymPass::{enumname(pass_)}, "{flagname(pass_)}", ""),',
+                file=f,
+            )
+        print(
+            f'        clEnumValN(CompilerGymPass::{enumname(passes[-1])}, "{flagname(pass_)}", "")),',
+            file=f,
+        )
         print("    cl::CommaSeparated);", file=f)
 
 
