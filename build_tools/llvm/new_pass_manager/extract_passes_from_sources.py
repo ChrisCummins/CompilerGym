@@ -4,9 +4,13 @@
 # LICENSE file in the root directory of this source tree.
 """Extract a list of passes from LLVM.
 
+Prints information about the passes as JSON to stdout.
+
 Usage:
 
-    $ python extract_passes_from_llvm_source_tree.py /path/to/llvm/install/dir
+    $ python extract_passes_from_llvm_source_tree.py \
+        --llvm_root=/path/to/llvm/install/dir \
+        > passes.json
 """
 import concurrent
 import json
@@ -201,7 +205,22 @@ def extract_all_passes(llvm_root: Path) -> List[Dict[str, str]]:
     matching_paths = set(find.strip().splitlines())
 
     # Prune the instrumentation passes.
+    n = len(matching_paths)
     matching_paths = [p for p in matching_paths if "Instrumentation/" not in p]
+    logging.info(
+        "Pruned %d utility file paths (%.2f%%)",
+        n - len(matching_paths),
+        (n - len(matching_paths)) / n * 100,
+    )
+
+    # Prune the utility passes.
+    n = len(matching_paths)
+    matching_paths = [p for p in matching_paths if "Utils/" not in p]
+    logging.info(
+        "Pruned %d utility file paths (%.2f%%)",
+        n - len(matching_paths),
+        (n - len(matching_paths)) / n * 100,
+    )
 
     logging.info(
         "Processing %s files from %s/include/llvm/Transforms",
