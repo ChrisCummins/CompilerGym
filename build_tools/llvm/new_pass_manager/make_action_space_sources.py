@@ -10,7 +10,9 @@ used as an action space by the LLVM environment.
 
 Usage:
 
-    $ make_action_space_genfiles.py <output-directory> < <pass-list>
+    $ make_action_space_genfiles.py \
+        --outdir=/path/to/output/directory \
+        < /path/to/passes.json
 
 The following files are generated:
 
@@ -77,6 +79,7 @@ from pathlib import Path
 from typing import Dict, List
 
 from absl import app, flags, logging
+from config import EXCLUDED_PASS_CLASSES
 
 flags.DEFINE_string("outdir", "genfiles", "Output directory")
 
@@ -133,6 +136,18 @@ def write(path: Path):
 
 def make_action_space_sources(passes: List[Dict[str, str]], outdir: Path):
     """Generate the pass builder sources."""
+    # Insert "flag_name" info for printing to JSON.
+    for pass_ in passes:
+        pass_["flag_name"] = flagname(pass_)
+
+    filtered_passes = []
+    for pass_ in passes:
+        if pass_["class_name"] in EXCLUDED_PASS_CLASSES:
+            logging.info("Excluding pass %s from config.py", pass_["class_name"])
+            continue
+        filtered_passes.append(pass_)
+    passes = filtered_passes
+
     with write(outdir / "HandleActionMacroSwitch.h") as f:
         print(file=f)
         print("#define HANDLE_ACTION(action, handlePass) \\", file=f)
@@ -145,7 +160,7 @@ def make_action_space_sources(passes: List[Dict[str, str]], outdir: Path):
 
     with write(outdir / "ActionPassBuilder.h") as f:
         print('#include "llvm/Passes/PassBuilder.h"', file=f)
-        print('#include "ActionEnums.h"')
+        print('#include "ActionEnums.h"', file=f)
         print(file=f)
         print(
             "llvm::ModulePassManager createPassManagerFromAction(CompilerGymPass action);",
@@ -193,7 +208,7 @@ def make_action_space_sources(passes: List[Dict[str, str]], outdir: Path):
         print("}", file=f)
 
     with write(outdir / "ActionEnums.h") as f:
-        print("#pragma once")
+        print("#pragma once", file=f)
         print(file=f)
         print("enum class CompilerGymPass {", file=f)
         for pass_ in passes:
@@ -223,6 +238,18 @@ def make_action_space_sources(passes: List[Dict[str, str]], outdir: Path):
         print("class actions(Enum):", file=f)
         for pass_ in passes:
             print(f"    {enumname(pass_)} = {pass_}", file=f)
+
+    with write(outdir / "flags.py") as f:
+        print("\nFLAGS = [", file=f)
+        for pass_ in passes:
+            print(f'    "{flagname(pass_)}",', file=f)
+        print("]", file=f)
+
+    with write(outdir / "classes.py") as f:
+        print("\nCLASSES = [", file=f)
+        for pass_ in passes:
+            print(f"    \"{pass_['class_name']}\",", file=f)
+        print("]", file=f)
 
     with write(outdir / "CommandLineFlag.cc") as f:
         print(

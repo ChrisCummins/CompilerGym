@@ -204,24 +204,6 @@ def extract_all_passes(llvm_root: Path) -> List[Dict[str, str]]:
 
     matching_paths = set(find.strip().splitlines())
 
-    # Prune the instrumentation passes.
-    n = len(matching_paths)
-    matching_paths = [p for p in matching_paths if "Instrumentation/" not in p]
-    logging.info(
-        "Pruned %d utility file paths (%.2f%%)",
-        n - len(matching_paths),
-        (n - len(matching_paths)) / n * 100,
-    )
-
-    # Prune the utility passes.
-    n = len(matching_paths)
-    matching_paths = [p for p in matching_paths if "Utils/" not in p]
-    logging.info(
-        "Pruned %d utility file paths (%.2f%%)",
-        n - len(matching_paths),
-        (n - len(matching_paths)) / n * 100,
-    )
-
     logging.info(
         "Processing %s files from %s/include/llvm/Transforms",
         len(matching_paths),
