@@ -40,19 +40,17 @@ research. We aim to act as a catalyst for making compilers faster using ML.
 
 .. toctree::
    :maxdepth: 2
+   :caption: Tutorials
+
+   tutorial/cgo22
+
+.. toctree::
+   :maxdepth: 2
    :caption: Environments
 
    llvm/index
    envs/gcc
    envs/loop_tool
-
-..
-    .. toctree::
-       :maxdepth: 1
-       :caption: Tutorials
-       tutorial/makefile_integration
-       tutorial/reinforcement_learning
-       tutorial/example_service
 
 .. toctree::
    :maxdepth: 3
