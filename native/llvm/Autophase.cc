@@ -12,7 +12,6 @@
 //===----------------------------------------------------------------------===//
 
 #include "compiler_gym/third_party/autophase/InstCount.h"
-
 #include "llvm/Analysis/CFG.h"
 #include "llvm/Support/raw_ostream.h"
 
