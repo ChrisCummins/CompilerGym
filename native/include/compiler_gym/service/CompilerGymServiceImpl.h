@@ -10,8 +10,8 @@
 
 #include <fmt/format.h>
 
+#include "compiler_gym/Version.h"
 #include "compiler_gym/util/GrpcStatusMacros.h"
-#include "compiler_gym/util/Version.h"
 
 namespace compiler_gym::runtime {
 

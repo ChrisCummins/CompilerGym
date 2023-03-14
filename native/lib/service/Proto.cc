@@ -3,7 +3,7 @@
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
 
-#include "compiler_gym/service/proto/Proto.h"
+#include "compiler_gym/service/Proto.h"
 
 #include <glog/logging.h>
 #include <stdint.h>

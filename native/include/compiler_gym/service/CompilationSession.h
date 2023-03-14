@@ -10,7 +10,7 @@
 #include <vector>
 
 #include "boost/filesystem.hpp"
-#include "compiler_gym/service/proto/compiler_gym_service.pb.h"
+#include "compiler_gym/service/compiler_gym_service.pb.h"
 
 namespace compiler_gym {
 
@@ -23,7 +23,7 @@ namespace compiler_gym {
  *
  * \code{.cpp}
  *     #include "compiler_gym/service/CompilationSession.h"
- *     #include "compiler_gym/service/runtime/Runtime.h"
+ *     #include "compiler_gym/service/Runtime.h"
  *
  *     using namespace compiler_gym;
  *

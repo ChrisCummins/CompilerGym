@@ -10,10 +10,10 @@
 #include <mutex>
 
 #include "boost/filesystem.hpp"
+#include "compiler_gym/service/BenchmarkCache.h"
 #include "compiler_gym/service/CompilationSession.h"
-#include "compiler_gym/service/proto/compiler_gym_service.grpc.pb.h"
-#include "compiler_gym/service/proto/compiler_gym_service.pb.h"
-#include "compiler_gym/service/runtime/BenchmarkCache.h"
+#include "compiler_gym/service/compiler_gym_service.grpc.pb.h"
+#include "compiler_gym/service/compiler_gym_service.pb.h"
 
 namespace compiler_gym::runtime {
 
@@ -102,4 +102,4 @@ class CompilerGymService final : public compiler_gym::CompilerGymService::Servic
 
 }  // namespace compiler_gym::runtime
 
-#include "compiler_gym/service/runtime/CompilerGymServiceImpl.h"
+#include "compiler_gym/service/CompilerGymServiceImpl.h"

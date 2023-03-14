@@ -7,7 +7,7 @@
 #include <string>
 #include <unordered_map>
 
-#include "compiler_gym/service/proto/compiler_gym_service.pb.h"
+#include "compiler_gym/service/compiler_gym_service.pb.h"
 
 namespace compiler_gym {
 

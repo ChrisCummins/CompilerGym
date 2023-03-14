@@ -12,13 +12,13 @@
 #include <optional>
 #include <unordered_map>
 
-#include "compiler_gym/envs/llvm/service/ActionSpace.h"
-#include "compiler_gym/envs/llvm/service/Benchmark.h"
-#include "compiler_gym/envs/llvm/service/Cost.h"
-#include "compiler_gym/envs/llvm/service/Observation.h"
-#include "compiler_gym/envs/llvm/service/ObservationSpaces.h"
+#include "compiler_gym/llvm/ActionSpace.h"
+#include "compiler_gym/llvm/Benchmark.h"
+#include "compiler_gym/llvm/Cost.h"
+#include "compiler_gym/llvm/Observation.h"
+#include "compiler_gym/llvm/ObservationSpaces.h"
 #include "compiler_gym/service/CompilationSession.h"
-#include "compiler_gym/service/proto/compiler_gym_service.grpc.pb.h"
+#include "compiler_gym/service/compiler_gym_service.grpc.pb.h"
 #include "llvm/Analysis/ProfileSummaryInfo.h"
 #include "llvm/Analysis/TargetLibraryInfo.h"
 #include "llvm/Analysis/TargetTransformInfo.h"

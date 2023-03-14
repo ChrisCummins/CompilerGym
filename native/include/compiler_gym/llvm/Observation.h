@@ -7,9 +7,9 @@
 #pragma once
 
 #include "boost/filesystem.hpp"
-#include "compiler_gym/envs/llvm/service/Benchmark.h"
-#include "compiler_gym/envs/llvm/service/ObservationSpaces.h"
-#include "compiler_gym/service/proto/compiler_gym_service.pb.h"
+#include "compiler_gym/llvm/Benchmark.h"
+#include "compiler_gym/llvm/ObservationSpaces.h"
+#include "compiler_gym/service/compiler_gym_service.pb.h"
 
 namespace compiler_gym::llvm_service {
 

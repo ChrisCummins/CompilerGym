@@ -11,9 +11,9 @@
 #include <vector>
 
 #include "boost/filesystem.hpp"
-#include "compiler_gym/envs/llvm/service/BenchmarkDynamicConfig.h"
-#include "compiler_gym/envs/llvm/service/Cost.h"
-#include "compiler_gym/service/proto/compiler_gym_service.pb.h"
+#include "compiler_gym/llvm/BenchmarkDynamicConfig.h"
+#include "compiler_gym/llvm/Cost.h"
+#include "compiler_gym/service/compiler_gym_service.pb.h"
 #include "compiler_gym/util/Subprocess.h"
 #include "llvm/IR/LLVMContext.h"
 #include "llvm/IR/Module.h"

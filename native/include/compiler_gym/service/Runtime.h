@@ -4,8 +4,8 @@
 // LICENSE file in the root directory of this source tree.
 #pragma once
 
-#include "compiler_gym/service/runtime/CompilerGymService.h"
-#include "compiler_gym/service/runtime/CreateAndRunCompilerGymServiceImpl.h"
+#include "compiler_gym/service/CompilerGymService.h"
+#include "compiler_gym/service/CreateAndRunCompilerGymServiceImpl.h"
 
 namespace compiler_gym::runtime {
 
@@ -16,7 +16,7 @@ namespace compiler_gym::runtime {
  * compilation service. Example:
  *
  * \code{.cpp}
- *     #include "compiler_gym/service/runtime/Runtime.h"
+ *     #include "compiler_gym/service/Runtime.h"
  *     #include "my_compiler_service/MyCompilationSession.h"
  *
  *     int main(int argc, char** argv) {

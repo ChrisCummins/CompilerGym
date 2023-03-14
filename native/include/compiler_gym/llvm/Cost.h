@@ -10,7 +10,7 @@
 #include <optional>
 
 #include "boost/filesystem.hpp"
-#include "compiler_gym/envs/llvm/service/BenchmarkDynamicConfig.h"
+#include "compiler_gym/llvm/BenchmarkDynamicConfig.h"
 #include "llvm/IR/Module.h"
 
 namespace compiler_gym::llvm_service {

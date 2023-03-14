@@ -19,8 +19,8 @@
 #include <vector>
 
 #include "boost/filesystem.hpp"
-#include "compiler_gym/service/proto/compiler_gym_service.pb.h"
-#include "compiler_gym/service/runtime/CompilerGymService.h"
+#include "compiler_gym/service/CompilerGymService.h"
+#include "compiler_gym/service/compiler_gym_service.pb.h"
 
 DECLARE_string(port);
 DECLARE_string(working_dir);
