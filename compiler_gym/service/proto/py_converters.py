@@ -18,6 +18,7 @@ from typing import Any, Callable
 from typing import Dict as DictType
 from typing import List, Type, Union
 
+import google.protobuf.any_pb2 as any_pb2
 import networkx as nx
 import numpy as np
 from google.protobuf.message import Message
@@ -26,7 +27,6 @@ from gym.spaces import Space as GymSpace
 from compiler_gym.service.proto.compiler_gym_service_pb2 import (
     ActionSpace as ActionSpaceProto,
 )
-from compiler_gym.service.proto.compiler_gym_service_pb2 import Any as AnyMessage
 from compiler_gym.service.proto.compiler_gym_service_pb2 import (
     BooleanBox,
     BooleanRange,
@@ -321,7 +321,7 @@ class ToEventMessageConverter:
             FloatTensor: "float_tensor",
             DoubleTensor: "double_tensor",
             StringTensor: "string_tensor",
-            AnyMessage: "any_value",
+            any_pb2.Any: "any_value",
         }
 
     def __call__(self, val: Any) -> Event:
@@ -395,7 +395,7 @@ class ProtobufAnyUnpacker:
             else type_str_to_class_map
         )
 
-    def __call__(self, msg: AnyMessage) -> Message:
+    def __call__(self, msg: any_pb2.Any) -> Message:
         message_cls = self.type_str_to_class_map[msg.TypeName()]
         unpacked_message = message_cls()
         status = msg.Unpack(unpacked_message)
@@ -416,7 +416,7 @@ class ProtobufAnyConverter:
         self.unpacker = unpacker
         self.message_converter = message_converter
 
-    def __call__(self, msg: AnyMessage) -> Any:
+    def __call__(self, msg: any_pb2.Any) -> Any:
         unpacked_message = self.unpacker(msg)
         return self.message_converter(unpacked_message)
 
@@ -505,7 +505,7 @@ def make_message_default_converter() -> Callable[[Any], Any]:
     conversion_map[ActionSpaceProto] = ActionSpaceMessageConverter(res)
     conversion_map[ObservationSpace] = ObservationSpaceMessageConverter(res)
 
-    conversion_map[AnyMessage] = ProtobufAnyConverter(
+    conversion_map[any_pb2.Any] = ProtobufAnyConverter(
         unpacker=ProtobufAnyUnpacker(), message_converter=res
     )
 
@@ -821,7 +821,7 @@ class ToSpaceMessageConverter:
             Int64Box: "int64_box",
             FloatBox: "float_box",
             DoubleBox: "double_box",
-            AnyMessage: "any_value",
+            any_pb2.Any: "any_value",
         }
 
     def __call__(

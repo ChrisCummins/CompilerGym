@@ -5,11 +5,11 @@
 """Unit tests for //compiler_gym:validate."""
 from collections.abc import Collection, Mapping
 
+import google.protobuf.any_pb2 as any_pb2
 import numpy as np
 import pytest
 
 from compiler_gym.service.proto import (
-    Any,
     BooleanBox,
     BooleanRange,
     BooleanSequenceSpace,
@@ -263,7 +263,7 @@ def test_protobuf_any_unpacker():
     unpacker = py_converters.ProtobufAnyUnpacker(
         {"compiler_gym.FloatTensor": FloatTensor}
     )
-    any_msg = Any()
+    any_msg = any_pb2.Any()
     tensor_message = FloatTensor(shape=[1], value=[1])
     any_msg.Pack(tensor_message)
     unpacked_tensor_message = unpacker(any_msg)
@@ -274,7 +274,7 @@ def test_protobuf_any_unpacker_value_error():
     unpacker = py_converters.ProtobufAnyUnpacker(
         {"IntentionallyWrongType": FloatTensor}
     )
-    any_msg = Any()
+    any_msg = any_pb2.Any()
     tensor_message = FloatTensor(shape=[1], value=[1])
     any_msg.Pack(tensor_message)
     any_msg.type_url = "IntentionallyWrongType"
@@ -292,7 +292,7 @@ def test_protobuf_any_converter():
     converter = py_converters.ProtobufAnyConverter(
         unpacker=unpacker, message_converter=type_based_converter
     )
-    any_msg = Any()
+    any_msg = any_pb2.Any()
     tensor_message = FloatTensor(shape=[1], value=[1])
     any_msg.Pack(tensor_message)
     tensor = converter(any_msg)

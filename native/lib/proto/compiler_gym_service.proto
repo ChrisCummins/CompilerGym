@@ -15,6 +15,8 @@ option java_multiple_files = true;
 option java_outer_classname = "CompilerGymServiceProto";
 option java_package = "com.compiler_gym";
 
+import "google/protobuf/any.proto";
+
 // The CompilerGymService is the interface that exposes the incremental
 // optimization of a program as an interactive environment.
 service CompilerGymService {
@@ -310,11 +312,6 @@ message CommandlineSpace {
   repeated string name = 1;
 }
 
-message Any {
-  string type_url = 1;
-  bytes value = 2;
-}
-
 message Space {
   oneof optional_type_id {
     string type_id = 2;
@@ -342,7 +339,7 @@ message Space {
     Int64Box int64_box = 21;
     FloatBox float_box = 22;
     DoubleBox double_box = 23;
-    Any any_value = 24;
+    google.protobuf.Any any_value = 24;
     ListSpace space_union = 26;
   }
 }
@@ -393,7 +390,7 @@ message Event {
     FloatTensor float_tensor = 12;
     DoubleTensor double_tensor = 13;
     StringTensor string_tensor = 14;
-    Any any_value = 15;
+    google.protobuf.Any any_value = 15;
   }
 }
 
