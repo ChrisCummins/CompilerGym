@@ -4,7 +4,7 @@
 // LICENSE file in the root directory of this source tree.
 #pragma once
 
-#include "compiler_gym/service/proto/compiler_gym_service.pb.h"
+#include "compiler_gym/service/compiler_gym_service.pb.h"
 
 namespace compiler_gym::mlir_service {
 

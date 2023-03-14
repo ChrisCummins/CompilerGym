@@ -8,8 +8,8 @@
 #include <boost/filesystem.hpp>
 #include <iostream>
 
-#include "compiler_gym/envs/llvm/service/BenchmarkFactory.h"
-#include "compiler_gym/service/proto/compiler_gym_service.pb.h"
+#include "compiler_gym/llvm/BenchmarkFactory.h"
+#include "compiler_gym/service/compiler_gym_service.pb.h"
 #include "compiler_gym/util/GrpcStatusMacros.h"
 #include "llvm/IR/Module.h"
 #include "llvm/IRReader/IRReader.h"

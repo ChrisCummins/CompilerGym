@@ -2,7 +2,7 @@
 //
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
-#include "compiler_gym/envs/llvm/service/BenchmarkFactory.h"
+#include "compiler_gym/llvm/BenchmarkFactory.h"
 
 #include <fmt/format.h>
 #include <glog/logging.h>
@@ -11,8 +11,8 @@
 #include <memory>
 #include <string>
 
-#include "compiler_gym/envs/llvm/service/BenchmarkDynamicConfig.h"
-#include "compiler_gym/envs/llvm/service/Cost.h"
+#include "compiler_gym/llvm/BenchmarkDynamicConfig.h"
+#include "compiler_gym/llvm/Cost.h"
 #include "compiler_gym/util/GrpcStatusMacros.h"
 #include "compiler_gym/util/RunfilesPath.h"
 #include "compiler_gym/util/StrLenConstexpr.h"

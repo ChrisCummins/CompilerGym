@@ -6,7 +6,7 @@
 
 #include <grpcpp/grpcpp.h>
 
-#include "compiler_gym/service/proto/compiler_gym_service.pb.h"
+#include "compiler_gym/service/compiler_gym_service.pb.h"
 #include "llvm/IR/LLVMContext.h"
 #include "llvm/IR/Module.h"
 #include "mlir/IR/Dialect.h"

@@ -15,7 +15,7 @@
 
 #include "boost/filesystem.hpp"
 #include "compiler_gym/envs/mlir/service/Benchmark.h"
-#include "compiler_gym/service/proto/compiler_gym_service.pb.h"
+#include "compiler_gym/service/compiler_gym_service.pb.h"
 #include "llvm/IR/LLVMContext.h"
 #include "llvm/IR/Module.h"
 

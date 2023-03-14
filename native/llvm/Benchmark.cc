@@ -2,7 +2,7 @@
 //
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
-#include "compiler_gym/envs/llvm/service/Benchmark.h"
+#include "compiler_gym/llvm/Benchmark.h"
 
 #include <fmt/format.h>
 #include <glog/logging.h>

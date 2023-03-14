@@ -3,7 +3,7 @@
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
 #include "compiler_gym/envs/mlir/service/MlirSession.h"
-#include "compiler_gym/service/runtime/Runtime.h"
+#include "compiler_gym/service/Runtime.h"
 #include "llvm/InitializePasses.h"
 #include "llvm/Support/InitLLVM.h"
 #include "llvm/Support/TargetSelect.h"

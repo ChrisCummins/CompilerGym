@@ -6,8 +6,8 @@
 
 #include <optional>
 
-#include "compiler_gym/service/proto/compiler_gym_service.pb.h"
-#include "compiler_gym/service/runtime/BenchmarkCache.h"
+#include "compiler_gym/service/BenchmarkCache.h"
+#include "compiler_gym/service/compiler_gym_service.pb.h"
 
 using namespace ::testing;
 

@@ -1,8 +1,12 @@
+// Copyright (c) Meta Platforms, Inc. and its affiliates.
+//
+// This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
 #include <glog/logging.h>
 
 #include <iostream>
 
-#include "compiler_gym/third_party/autophase/InstCount.h"
+#include "compiler_gym/llvm/Autophase.h"
 #include "llvm/IR/Module.h"
 #include "llvm/IRReader/IRReader.h"
 #include "llvm/Support/ErrorOr.h"

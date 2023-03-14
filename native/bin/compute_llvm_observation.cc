@@ -1,4 +1,4 @@
-// Copyright (c) Facebook, Inc. and its affiliates.
+// Copyright (c) Meta Platforms, Inc. and its affiliates.
 //
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
@@ -9,10 +9,10 @@
 #include <iostream>
 #include <magic_enum.hpp>
 
-#include "compiler_gym/envs/llvm/service/BenchmarkFactory.h"
-#include "compiler_gym/envs/llvm/service/Observation.h"
-#include "compiler_gym/envs/llvm/service/ObservationSpaces.h"
-#include "compiler_gym/service/proto/compiler_gym_service.pb.h"
+#include "compiler_gym/llvm/BenchmarkFactory.h"
+#include "compiler_gym/llvm/Observation.h"
+#include "compiler_gym/llvm/ObservationSpaces.h"
+#include "compiler_gym/service/compiler_gym_service.pb.h"
 #include "llvm/IR/Module.h"
 #include "llvm/IRReader/IRReader.h"
 #include "llvm/Support/ErrorOr.h"

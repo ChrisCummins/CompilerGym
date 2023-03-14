@@ -12,28 +12,28 @@ CompilerGym. The base session is implemented by a
 ActionSpace.h
 -------------
 
-:code:`#include "compiler_gym/envs/llvm/service/ActionSpace.h"`
+:code:`#include "compiler_gym/llvm/service/ActionSpace.h"`
 
 .. doxygenfile:: compiler_gym/envs/llvm/service/ActionSpace.h
 
 Benchmark.h
 -----------
 
-:code:`#include "compiler_gym/envs/llvm/service/Benchmark.h"`
+:code:`#include "compiler_gym/llvm/service/Benchmark.h"`
 
 .. doxygenfile:: compiler_gym/envs/llvm/service/Benchmark.h
 
 BenchmarkFactory.h
 ------------------
 
-:code:`#include "compiler_gym/envs/llvm/service/BenchmarkFactory.h"`
+:code:`#include "compiler_gym/llvm/service/BenchmarkFactory.h"`
 
 .. doxygenfile:: compiler_gym/envs/llvm/service/BenchmarkFactory.h
 
 Cost.h
 ------
 
-:code:`#include "compiler_gym/envs/llvm/service/Cost.h"`
+:code:`#include "compiler_gym/llvm/service/Cost.h"`
 
 .. doxygenfile:: compiler_gym/envs/llvm/service/Cost.h
 
@@ -41,20 +41,20 @@ Cost.h
 LlvmSession.h
 -------------
 
-:code:`#include "compiler_gym/envs/llvm/service/LlvmSession.h"`
+:code:`#include "compiler_gym/llvm/service/LlvmSession.h"`
 
 .. doxygenfile:: compiler_gym/envs/llvm/service/LlvmSession.h
 
 Observation.h
 -------------
 
-:code:`#include "compiler_gym/envs/llvm/service/Observation.h"`
+:code:`#include "compiler_gym/llvm/service/Observation.h"`
 
 .. doxygenfile:: compiler_gym/envs/llvm/service/Observation.h
 
 ObservationSpaces.h
 -------------------
 
-:code:`#include "compiler_gym/envs/llvm/service/ObservationSpaces.h"`
+:code:`#include "compiler_gym/llvm/service/ObservationSpaces.h"`
 
 .. doxygenfile:: compiler_gym/envs/llvm/service/ObservationSpaces.h

@@ -6,7 +6,7 @@
 
 #include <magic_enum.hpp>
 
-#include "compiler_gym/envs/llvm/service/ActionSpace.h"
+#include "compiler_gym/llvm/service/ActionSpace.h"
 #include "tests/TestMacros.h"
 
 using namespace ::testing;

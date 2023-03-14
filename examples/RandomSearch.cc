@@ -21,9 +21,9 @@
 #include <thread>
 #include <vector>
 
-#include "compiler_gym/envs/llvm/service/LlvmSession.h"
-#include "compiler_gym/envs/llvm/service/ObservationSpaces.h"
-#include "compiler_gym/service/runtime/CompilerGymService.h"
+#include "compiler_gym/llvm/service/LlvmSession.h"
+#include "compiler_gym/llvm/service/ObservationSpaces.h"
+#include "compiler_gym/service/CompilerGymService.h"
 #include "compiler_gym/util/GrpcStatusMacros.h"
 
 DEFINE_string(benchmark, "benchmark://cbench-v1/crc32", "The benchmark to use.");

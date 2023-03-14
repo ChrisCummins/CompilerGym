@@ -7,9 +7,9 @@
 #include <boost/filesystem.hpp>
 #include <optional>
 
-#include "compiler_gym/envs/llvm/service/Benchmark.h"
-#include "compiler_gym/envs/llvm/service/BenchmarkFactory.h"
-#include "compiler_gym/envs/llvm/service/LlvmSession.h"
+#include "compiler_gym/llvm/service/Benchmark.h"
+#include "compiler_gym/llvm/service/BenchmarkFactory.h"
+#include "compiler_gym/llvm/service/LlvmSession.h"
 #include "compiler_gym/util/GrpcStatusMacros.h"
 #include "compiler_gym/util/RunfilesPath.h"
 #include "glog/logging.h"

@@ -2,7 +2,7 @@
 //
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
-#include "compiler_gym/envs/llvm/service/LlvmSession.h"
+#include "compiler_gym/llvm/LlvmSession.h"
 
 #include <cpuinfo.h>
 #include <fmt/format.h>
@@ -16,15 +16,15 @@
 #include <string>
 
 #include "boost/filesystem.hpp"
-#include "compiler_gym/envs/llvm/service/ActionSpace.h"
-#include "compiler_gym/envs/llvm/service/Benchmark.h"
-#include "compiler_gym/envs/llvm/service/BenchmarkFactory.h"
-#include "compiler_gym/envs/llvm/service/Cost.h"
-#include "compiler_gym/envs/llvm/service/Observation.h"
-#include "compiler_gym/envs/llvm/service/ObservationSpaces.h"
-#include "compiler_gym/envs/llvm/service/passes/10.0.0/ActionHeaders.h"
-#include "compiler_gym/envs/llvm/service/passes/10.0.0/ActionSwitch.h"
-#include "compiler_gym/third_party/autophase/InstCount.h"
+#include "compiler_gym/llvm/ActionSpace.h"
+#include "compiler_gym/llvm/Autophase.h"
+#include "compiler_gym/llvm/Benchmark.h"
+#include "compiler_gym/llvm/BenchmarkFactory.h"
+#include "compiler_gym/llvm/Cost.h"
+#include "compiler_gym/llvm/Observation.h"
+#include "compiler_gym/llvm/ObservationSpaces.h"
+#include "compiler_gym/llvm/passes/10.0.0/ActionHeaders.h"
+#include "compiler_gym/llvm/passes/10.0.0/ActionSwitch.h"
 #include "compiler_gym/third_party/llvm/InstCount.h"
 #include "compiler_gym/util/EnumUtil.h"
 #include "compiler_gym/util/GrpcStatusMacros.h"
@@ -214,7 +214,7 @@ Status LlvmSession::applyPassAction(LlvmAction action, bool& actionHadNoEffect) 
 #ifdef EXPERIMENTAL_UNSTABLE_GVN_SINK_PASS
   // NOTE(https://github.com/facebookresearch/CompilerGym/issues/46): The
   // -gvn-sink pass has been found to have nondeterministic behavior so has
-  // been disabled in compiler_gym/envs/llvm/service/pass/config.py. Invoking
+  // been disabled in compiler_gym/envs/llvm/pass/config.py. Invoking
   // the command line was found to produce more stable results.
   if (action == LlvmAction::GVNSINK_PASS) {
     RETURN_IF_ERROR(runOptWithArgs({"-gvn-sink"}));

@@ -2,7 +2,7 @@
 //
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
-#include "compiler_gym/envs/llvm/service/ObservationSpaces.h"
+#include "compiler_gym/llvm/ObservationSpaces.h"
 
 #include <glog/logging.h>
 #include <stdint.h>
@@ -10,7 +10,7 @@
 #include <limits>
 #include <magic_enum.hpp>
 
-#include "compiler_gym/envs/llvm/service/Benchmark.h"
+#include "compiler_gym/llvm/Benchmark.h"
 #include "compiler_gym/third_party/llvm/InstCount.h"
 #include "compiler_gym/util/EnumUtil.h"
 #include "nlohmann/json.hpp"

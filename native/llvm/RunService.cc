@@ -2,9 +2,9 @@
 //
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
-#include "compiler_gym/envs/llvm/service/BenchmarkFactory.h"
-#include "compiler_gym/envs/llvm/service/LlvmSession.h"
-#include "compiler_gym/service/runtime/Runtime.h"
+#include "compiler_gym/llvm/BenchmarkFactory.h"
+#include "compiler_gym/llvm/LlvmSession.h"
+#include "compiler_gym/service/Runtime.h"
 #include "llvm/InitializePasses.h"
 #include "llvm/Support/TargetSelect.h"
 

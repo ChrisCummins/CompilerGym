@@ -7,7 +7,7 @@
 #include <fmt/format.h>
 
 #include "compiler_gym/service/CompilationSession.h"
-#include "compiler_gym/service/runtime/Runtime.h"
+#include "compiler_gym/service/Runtime.h"
 #include "compiler_gym/util/Unreachable.h"
 
 const char* usage = R"(Example CompilerGym service)";

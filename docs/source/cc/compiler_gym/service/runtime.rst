@@ -11,7 +11,7 @@ that can be used by the Python frontend.
 Runtime.h
 ---------
 
-:code:`#include "compiler_gym/service/runtime/Runtime.h"`
+:code:`#include "compiler_gym/service/Runtime.h"`
 
 .. doxygenfile:: compiler_gym/service/runtime/Runtime.h
 
@@ -19,7 +19,7 @@ Runtime.h
 CompilerGymService.h
 --------------------
 
-:code:`#include "compiler_gym/service/runtime/CompilerGymService.h"`
+:code:`#include "compiler_gym/service/CompilerGymService.h"`
 
 .. doxygenfile:: compiler_gym/service/runtime/CompilerGymService.h
 
@@ -27,6 +27,6 @@ CompilerGymService.h
 BenchmarkCache.h
 ----------------
 
-:code:`#include "compiler_gym/service/runtime/BenchmarkCache.h"`
+:code:`#include "compiler_gym/service/BenchmarkCache.h"`
 
 .. doxygenfile:: compiler_gym/service/runtime/BenchmarkCache.h
