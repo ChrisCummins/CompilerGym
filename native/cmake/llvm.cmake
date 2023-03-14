@@ -3,11 +3,5 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-fetchcontent_declare(
-    llvm
-    GIT_REPOSITORY https://github.com/llvm/llvm-project
-    GIT_TAG llvmorg-10.0.0
-)
-set(FETCHCONTENT_QUIET OFF)
-
-fetchcontent_makeavailable(llvm)
+find_package(LLVM 10.0.0 REQUIRED CONFIG)
+message(STATUS "Using LLVM ${LLVM_VERSION} from ${LLVM_DIR}")

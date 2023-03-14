@@ -1,7 +1,13 @@
 ---
 name: compiler_gym
+channels:
+    - conda-forge
 dependencies:
     - python=3.10
     - pip
     - cmake=3.22.1
     - ninja=1.10.2
+    - boost-cpp=1.73.0
+    - grpc-cpp=1.46.1
+    - fmt=7.1.3
+    - llvm=10.0.0
