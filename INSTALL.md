@@ -52,7 +52,7 @@ We recommend using
 to manage the remaining build dependencies. First create a conda environment
 with the required dependencies:
 
-    conda create -y -n compiler_gym python=3.8
+    conda env create --file environment.yml
     conda activate compiler_gym
     conda install -y -c conda-forge cmake doxygen pandoc patchelf
 

@@ -1,0 +1,7 @@
+---
+name: compiler_gym
+dependencies:
+    - python=3.10
+    - pip
+    - cmake=3.22.1
+    - ninja=1.10.2
