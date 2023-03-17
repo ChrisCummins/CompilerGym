@@ -5,17 +5,6 @@
 
 add_library(llvm_lex LLLexer.cc llvm_lexer_token_info.cc)
 
-target_include_directories(llvm_env_lib PUBLIC ${LLVM_INCLUDE_DIRS})
-target_link_libraries(
-    llvm_env_lib
-    service
-    service_proto
-    boost_filesystem
-    grpc++
-    fmt::fmt
-    nlohmann_json::nlohmann_json
-    cpuinfo_internals
-    programl_proto
-    protobuf::libprotobuf
-)
-llvm_map_components_to_libnames(llvm_lex core support bitwriter)
+target_include_directories(llvm_lex PUBLIC ${LLVM_INCLUDE_DIRS})
+llvm_map_components_to_libnames(llvm_libs core support bitwriter)
+target_link_libraries(llvm_lex ${llvm_libs})

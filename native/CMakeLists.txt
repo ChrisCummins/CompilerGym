@@ -25,6 +25,7 @@ set(generated_header_dir ${CMAKE_BINARY_DIR}/include)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 include_directories(${generated_header_dir})
 
+add_subdirectory(bin)
 add_subdirectory(lib)
 add_subdirectory(llvm)
 add_subdirectory(programl)
