@@ -10,12 +10,13 @@
 #include <limits>
 #include <magic_enum.hpp>
 
+#include "compiler_gym/llvm/Autophase.h"
 #include "compiler_gym/llvm/Benchmark.h"
-#include "compiler_gym/third_party/llvm/InstCount.h"
+#include "compiler_gym/llvm/InstCount.h"
 #include "compiler_gym/util/EnumUtil.h"
 #include "nlohmann/json.hpp"
 #include "programl/graph/format/node_link_graph.h"
-#include "programl/proto/program_graph.pb.h"
+#include "programl/program_graph.pb.h"
 
 using nlohmann::json;
 

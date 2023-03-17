@@ -25,7 +25,6 @@
 #include "compiler_gym/llvm/ObservationSpaces.h"
 #include "compiler_gym/llvm/passes/10.0.0/ActionHeaders.h"
 #include "compiler_gym/llvm/passes/10.0.0/ActionSwitch.h"
-#include "compiler_gym/third_party/llvm/InstCount.h"
 #include "compiler_gym/util/EnumUtil.h"
 #include "compiler_gym/util/GrpcStatusMacros.h"
 #include "compiler_gym/util/RunfilesPath.h"

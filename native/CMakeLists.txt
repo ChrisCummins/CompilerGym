@@ -13,10 +13,12 @@ include(ExternalProject)
 set(CMAKE_CXX_STANDARD 17)
 
 include(cmake/boost.cmake)
+include(cmake/cpuinfo.cmake)
 include(cmake/fmt.cmake)
 include(cmake/grpc.cmake)
 include(cmake/llvm.cmake)
 include(cmake/magic_enum.cmake)
+include(cmake/nlohmann_json.cmake)
 
 # Add the project headers to the default include paths
 set(generated_header_dir ${CMAKE_BINARY_DIR}/include)
@@ -25,3 +27,4 @@ include_directories(${generated_header_dir})
 
 add_subdirectory(lib)
 add_subdirectory(llvm)
+add_subdirectory(programl)
