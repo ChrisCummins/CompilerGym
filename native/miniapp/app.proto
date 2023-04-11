@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+// import "google/protobuf/any.proto";
+
+message MiniApp {
+  string value = 1;
+}
