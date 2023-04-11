@@ -30,14 +30,46 @@ add_custom_command(
     DEPENDS program_graph.proto util.proto features.proto
 )
 
+llvm_map_components_to_libnames(
+    llvm_libs
+    support
+    core
+    bitwriter
+    irreader
+    ipo
+    coroutines
+    objcarcopts
+    target
+    codegen
+    x86codegen
+    x86asmparser
+)
+
 add_library(
-    programl_proto
+    programl
+    graph/features.cc
+    graph/program_graph_builder.cc
+    graph/format/node_link_graph.cc
+    ir/llvm/llvm.cc
+    ir/llvm/internal/program_graph_builder.cc
+    ir/llvm/internal/program_graph_builder_pass.cc
+    ir/llvm/internal/text_encoder.cc
     ${program_graph_proto_srcs}
     ${program_graph_proto_hdrs}
 )
 target_link_libraries(
-    programl_proto
-    grpc++
-    protobuf::libprotobuf
-    gRPC::grpc++_reflection
+    programl
+    labm8
+    ${llvm_libs}
+    ${PROTOBUF_LDFLAGS}
+    ${GRPC_LDFLAGS}
+    ${GRPCPP_LDFLAGS}
+    -Wl,-rpath,${GRPC_LIBDIR}
+)
+target_include_directories(programl PUBLIC ${LLVM_INCLUDE_DIRS})
+target_compile_options(
+    programl
+    PRIVATE
+        # NOTE(cummins): Workaround for libprotobuf bug.
+        -DNDEBUG
 )

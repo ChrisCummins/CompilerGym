@@ -35,7 +35,7 @@ add_custom_command(
         "${generated_header_dir}/compiler_gym/service"
         -I
         "${service_proto_path}"
-        --plugin=protoc-gen-grpc="${GRPC_CPP_PLUGIN_EXECUTABLE}"
+        --plugin=protoc-gen-grpc="${GRPC_CPP_PLUGIN}"
         "${service_proto}"
     DEPENDS "${service_proto}"
 )
@@ -49,9 +49,17 @@ add_library(
 )
 target_link_libraries(
     service_proto
-    gRPC::grpc++_reflection
-    grpc++
-    protobuf::libprotobuf
+    PRIVATE
+        ${PROTOBUF_LDFLAGS}
+        ${GRPC_LDFLAGS}
+        ${GRPCPP_LDFLAGS}
+        -Wl,-rpath,${GRPC_LIBDIR}
+)
+target_compile_options(
+    service_proto
+    PRIVATE
+        # NOTE(cummins): Workaround for libprotobuf bug.
+        -DNDEBUG
 )
 
 # C++ library.
@@ -63,4 +71,10 @@ add_library(
     CreateAndRunCompilerGymServiceImpl.cc
     Proto.cc
 )
-target_link_libraries(service service_proto grpc++ magic_enum)
+target_link_libraries(
+    service
+    service_proto
+    ${GRPC_LDFLAGS}
+    ${GRPCPP_LDFLAGS}
+    magic_enum
+)

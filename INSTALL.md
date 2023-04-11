@@ -54,7 +54,7 @@ with the required dependencies:
 
     conda env create --file environment.yml
     conda activate compiler_gym
-    conda install -y -c conda-forge cmake doxygen pandoc patchelf
+    conda install -y -c conda-forge cmake doxygen pandoc
 
 Then clone the CompilerGym source code using:
 

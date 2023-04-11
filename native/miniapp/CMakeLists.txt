@@ -25,21 +25,6 @@ add_custom_command(
     DEPENDS "${app_proto}"
 )
 
-# add_library(
-#     app_proto
-#     ${app_grpc_srcs}
-#     ${app_grpc_hdrs}
-#     ${app_proto_srcs}
-#     ${app_proto_hdrs}
-# )
-# target_link_libraries(
-#     app_proto
-#     PRIVATE
-#     protobuf::libprotobuf
-#     gRPC::grpc++
-#     gRPC::grpc++_reflection
-# )
-
 add_executable(
     app
     main.cc
