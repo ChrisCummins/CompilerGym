@@ -56,7 +56,9 @@ target_compile_options(
 )
 target_link_libraries(
     app
-    PRIVATE ${PROTOBUF_LDFLAGS}
-    # gRPC::grpc++
-    # gRPC::grpc++_reflection
+    PRIVATE
+        ${PROTOBUF_LDFLAGS}
+        ${GRPC_LDFLAGS}
+        ${GRPCPP_LDFLAGS}
+        -Wl,-rpath,${GRPC_LIBDIR}
 )

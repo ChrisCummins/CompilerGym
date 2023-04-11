@@ -8,14 +8,12 @@ find_package(PkgConfig REQUIRED)
 pkg_search_module(PROTOBUF REQUIRED protobuf)
 find_program(PROTOC protoc)
 message(STATUS "Using protobuf: ${PROTOBUF_VERSION}")
+message(STATUS "Protobuf compiler: ${PROTOC}")
 
-# TODO(cummins): Same as above but for gRPC:
 # Find gRPC installation
-find_package(gRPC CONFIG REQUIRED)
-message(STATUS "Using gRPC ${gRPC_VERSION}")
-
-set(GRPC_CPP_PLUGIN $<TARGET_FILE:gRPC::grpc_cpp_plugin>)
-include_directories(
-    SYSTEM
-    $<TARGET_PROPERTY:gRPC::grpc++,INTERFACE_INCLUDE_DIRECTORIES>
-)
+pkg_search_module(GRPC REQUIRED grpc)
+pkg_search_module(GRPCPP REQUIRED grpc++)
+include_directories(SYSTEM ${GRPC_INCLUDEDIR})
+find_program(GRPC_CPP_PLUGIN grpc_cpp_plugin)
+message(STATUS "Using gRPC: ${GRPC_VERSION}")
+message(STATUS "gRPC C++ plugin: ${GRPC_CPP_PLUGIN}")
